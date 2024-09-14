@@ -5,6 +5,7 @@ import { DrinkModule } from '../drink/drink.module'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
+import { EventModule } from '../event/event.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { Drink } from 'drink/entities/drink.entity';
     entities: [Drink],
     synchronize: true,
   }),
-  DrinkModule],
+  DrinkModule,
+  EventModule],
   controllers: [AppController],
   providers: [AppService],
 })
