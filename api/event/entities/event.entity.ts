@@ -8,6 +8,6 @@ export class Event {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: Date;
 
-  @Column({ default: false })
+  @Column({ default: true })
   active: boolean;
 }

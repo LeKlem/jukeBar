@@ -5,7 +5,13 @@ import { DrinkModule } from '../drink/drink.module'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
+import { Event } from 'event/entities/event.entity';
 import { EventModule } from '../event/event.module';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { User } from 'users/entities/user.entity';
+import { UsersModule } from 'users/users.module';
+
 
 @Module({
   imports: [
@@ -16,13 +22,18 @@ import { EventModule } from '../event/event.module';
     username: 'root',
     password: '',
     database: 'jukebar',
-    entities: [Drink],
+    entities: [Event, Drink, User],
     synchronize: true,
   }),
-  DrinkModule,
-  EventModule],
+  DrinkModule, EventModule, UsersModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard, 
+    // }
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) { }

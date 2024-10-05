@@ -28,7 +28,8 @@ export class DrinkService {
   
 
   findAll(): Promise<Drink[]> {
-        return this.drinkRepository.find();  }
+    return this.drinkRepository.find();  
+  }
 
   findOne(id: number) : Promise<Drink> {
     return this.drinkRepository.findOneBy({id});
