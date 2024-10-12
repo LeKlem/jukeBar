@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordUserDto } from './dto/update-user.dto';
 import { UUID } from './dto/params-user.dto';
 import { LoginAuthDto } from './dto/auth.dto';
+import { Public } from './decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -50,6 +51,7 @@ export class AdminController {
 export class LoginController {
   constructor(private readonly usersService: UsersService) { }
 
+  @Public()
   @Post()
   async login(@Body() loginData: LoginAuthDto) {
     return this.usersService.login(loginData);

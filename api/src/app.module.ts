@@ -7,10 +7,11 @@ import { DataSource } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
 import { Event } from 'event/entities/event.entity';
 import { EventModule } from '../event/event.module';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { AuthGuard } from '../users/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { User } from 'users/entities/user.entity';
 import { UsersModule } from 'users/users.module';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -25,14 +26,14 @@ import { UsersModule } from 'users/users.module';
     entities: [Event, Drink, User],
     synchronize: true,
   }),
-  DrinkModule, EventModule, UsersModule
+  DrinkModule, EventModule, UsersModule, JwtModule
   ],
   controllers: [AppController],
   providers: [AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard, 
-    // }
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard, 
+    }
   ],
 })
 export class AppModule {
