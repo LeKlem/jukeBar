@@ -23,6 +23,14 @@ export class EventService {
   findOne(id: number) : Promise<Event> {
     return this.eventRepository.findOneBy({id});
   }
+  getActive(): Promise<Event | null> {
+    return this.eventRepository.findOne({
+      where: { active: true },
+      order: { id: 'DESC' },
+    });
+  }
+  
+  
 
   update(id: number, updateEventDto: UpdateEventDto) {
     return `This action updates a #${id} event`;

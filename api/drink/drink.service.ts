@@ -35,8 +35,14 @@ export class DrinkService {
     return this.drinkRepository.findOneBy({id});
   }
 
-  update(id: number, updateDrinkDto: UpdateDrinkDto) {
-    return `This action updates a #${id} drink`;
+  async update(id: number, updateDrinkDto: UpdateDrinkDto) {
+    const contract = await this.drinkRepository.findOneBy({ id });
+    if (!contract) {
+      throw new HttpException({ message: 'Drink not found.' }, HttpStatus.NOT_FOUND);
+    } else {
+      await this.drinkRepository.update(id, { ...updateDrinkDto });
+      return this.drinkRepository.findOneBy({ id });
+    }
   }
 
   remove(id: number) : Promise<DeleteResult> {

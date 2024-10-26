@@ -12,28 +12,30 @@ import { APP_GUARD } from '@nestjs/core';
 import { User } from 'users/entities/user.entity';
 import { UsersModule } from 'users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
+import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.module';
 
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '',
-    database: 'jukebar',
-    entities: [Event, Drink, User],
-    synchronize: true,
-  }),
-  DrinkModule, EventModule, UsersModule, JwtModule
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '',
+      database: 'jukebar',
+      entities: [Event, Drink, User, EventDrinksPair],
+      synchronize: true,
+    }),
+  DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, JwtModule
   ],
   controllers: [AppController],
   providers: [AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard, 
-    }
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard, 
+    // }
   ],
 })
 export class AppModule {

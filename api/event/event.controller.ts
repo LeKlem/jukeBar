@@ -11,10 +11,16 @@ export class EventController {
   create(@Body() createEventDto: CreateEventDto) {
     return this.eventService.create();
   }
+  
   @Get()
   findAll() {
     return this.eventService.findAll();
   }
+  @Get('/active')
+  findActive() {
+    return this.eventService.getActive();
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
