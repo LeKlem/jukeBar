@@ -1,18 +1,20 @@
 import { FormEvent, useState } from "react";
 import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import { login } from "../webservices/AuthWebService";
-import { LoginUserDTO } from "../models/UserModels";
+import { LoggedUserDTO, LoginUserDTO } from "../models/UserModels";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setMail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     async function submitLogin(e: FormEvent) {
         e.preventDefault();
         const loginUserDTO: LoginUserDTO = {email: email, password: password}
-        const token = (await login(loginUserDTO)).data;
-        //TODO Link token to user + redirect to home
-        console.log(token);
+        const loggedUserDTO = (await login(loginUserDTO)).data as LoggedUserDTO;
+        localStorage.setItem('Bearer', loggedUserDTO.token);
+        navigate('/');
     }
 
     return (
