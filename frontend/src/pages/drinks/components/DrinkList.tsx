@@ -5,6 +5,7 @@ import './DrinkList.scss'
 import { CustomModalProps, useModal } from "../../../context/ModalContext";
 import DrinkForm from "./DrinkForm/DrinkForm";
 import { useEffect, useState } from "react";
+import { deleteOneDrink } from "../../../webservices/DrinkWebService";
 
 interface DrinkListProps {
     drinks: DrinkDTO[]
@@ -27,6 +28,15 @@ export default function DrinkList(props: DrinkListProps) {
         header: 'Ajout d\'une boisson',
     }
 
+    const deleteDrink = async (deleteDrink: DrinkDTO) => {
+        try {
+            await deleteOneDrink(deleteDrink.id);
+            setDrinks(drinks.filter(drink => drink.id != deleteDrink.id));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const displayDrinks = (drinks: DrinkDTO[]) => {
         return drinks.map((drink, index) => (
             <tr key={index}>
@@ -37,7 +47,7 @@ export default function DrinkList(props: DrinkListProps) {
                     <Button variant="outline-primary">
                         <PencilSquare/>
                     </Button>
-                    <Button variant="danger">
+                    <Button variant="danger" onClick={() => deleteDrink(drink)}>
                         <Trash/>
                     </Button>
                 </td>
