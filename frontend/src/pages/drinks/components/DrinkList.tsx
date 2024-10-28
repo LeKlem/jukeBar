@@ -1,29 +1,25 @@
 import { Button, Table } from "react-bootstrap";
-import { Drink } from "../../../models/DrinkModels";
+import { DrinkDTO } from "../../../models/DrinkModels";
 import { PlusSquare, Trash, PencilSquare } from "react-bootstrap-icons";
 import './DrinkList.scss'
 import { CustomModalProps, useModal } from "../../../context/ModalContext";
 import DrinkForm from "./DrinkForm/DrinkForm";
+import { useState } from "react";
 
 export default function DrinkList() {
-    const drinks: Drink[] = [];
+    const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
     const { openModal } = useModal();
-    
+
+    const handleDrinkCreation = (drink: DrinkDTO) => {
+        setDrinks([drink, ...drinks]);
+    }
+
     const modal: CustomModalProps = {
-        content: <DrinkForm/>,
-        header: 'Bonjour',
+        content: <DrinkForm onCreateDrink={handleDrinkCreation}/>,
+        header: 'Ajout d\'une boisson',
     }
 
-    for (let i = 0; i < 20; i++) {
-        const drink: Drink = {
-            id: i,
-            name: 'Toto',
-            price: 2.5
-        }
-        drinks.push(drink);
-    }
-
-    const displayDrinks = (drinks: Drink[]) => {
+    const displayDrinks = (drinks: DrinkDTO[]) => {
         return drinks.map((drink, index) => (
             <tr key={index}>
                 <td>{ drink.id }</td>
