@@ -19,3 +19,7 @@ export const getAllDrinks = async() : Promise<DrinkDTO[]> => {
 export const deleteOneDrink = async (drinkId: number): Promise<AxiosResponse> => {
     return await axios.delete(`${url}/${drinkId}`, config);
 }
+
+export const updateDrink = async (drink: CreateDrinkDTO, drinkId: number): Promise<DrinkDTO> => {
+    return (await axios.patch(`${url}/${drinkId}`, drink, config)).data as DrinkDTO;
+}

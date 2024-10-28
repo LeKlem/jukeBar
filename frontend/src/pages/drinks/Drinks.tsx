@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import DrinkList from "./components/DrinkList";
+import DrinkList from "./components/DrinkList/DrinkList";
 import { DrinkDTO } from "../../models/DrinkModels";
 import { getAllDrinks } from "../../webservices/DrinkWebService";
 
