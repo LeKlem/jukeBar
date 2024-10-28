@@ -7,10 +7,12 @@ import Header from "./components/Header"
 
 function App() {
   return (
-    <>
-      <Header/>
-      <Outlet/>
-    </>
+    <div className='d-flex flex-column w-100'>
+      <Header />
+      <div className="px-4">
+        <Outlet />
+      </div>
+    </div>
   )
 }
 
