@@ -4,11 +4,19 @@ import { PlusSquare, Trash, PencilSquare } from "react-bootstrap-icons";
 import './DrinkList.scss'
 import { CustomModalProps, useModal } from "../../../context/ModalContext";
 import DrinkForm from "./DrinkForm/DrinkForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function DrinkList() {
+interface DrinkListProps {
+    drinks: DrinkDTO[]
+}
+
+export default function DrinkList(props: DrinkListProps) {
     const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
     const { openModal } = useModal();
+    
+    useEffect(() => {
+        setDrinks([...props.drinks])
+    }, [props.drinks]);
 
     const handleDrinkCreation = (drink: DrinkDTO) => {
         setDrinks([drink, ...drinks]);

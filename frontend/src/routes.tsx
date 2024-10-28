@@ -3,6 +3,7 @@ import App from "./App";
 import Home from "./pages/home/Home";
 import Login from "./pages/Login";
 import Drinks from "./pages/drinks/Drinks";
+import drinkLoader from "./pages/drinks/DrinkLoader";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'drinks',
-        element: <Drinks />
+        element: <Drinks />,
+        loader: drinkLoader
       }
     ]
   },

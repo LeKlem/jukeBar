@@ -11,3 +11,7 @@ const config = {
 export const createDrink = async(newDrink: CreateDrinkDTO): Promise<DrinkDTO> =>  {
     return ((await axios.post(url, newDrink, config)).data) as DrinkDTO;
 }
+
+export const getAllDrinks = async() : Promise<DrinkDTO[]> => {
+    return ((await axios.get(url, config)).data) as DrinkDTO[];
+}
