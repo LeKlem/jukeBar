@@ -51,7 +51,7 @@ export default function EventTable() {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="test">
+                    <tbody>
                         {displayEvents(events)}
                     </tbody>
                 </Table>
