@@ -2,9 +2,17 @@ import { Button, Table } from "react-bootstrap";
 import { Drink } from "../../../models/DrinkModels";
 import { PlusSquare, Trash, PencilSquare } from "react-bootstrap-icons";
 import './DrinkList.scss'
+import { CustomModalProps, useModal } from "../../../context/ModalContext";
+import DrinkForm from "./DrinkForm/DrinkForm";
 
 export default function DrinkList() {
     const drinks: Drink[] = [];
+    const { openModal } = useModal();
+    
+    const modal: CustomModalProps = {
+        content: <DrinkForm/>,
+        header: 'Bonjour',
+    }
 
     for (let i = 0; i < 20; i++) {
         const drink: Drink = {
@@ -37,7 +45,7 @@ export default function DrinkList() {
         <>
             <div className="title d-flex justify-content-between">
                 <h1>Boissons</h1>
-                <Button className="d-flex event-create gap-2 align-items-center">
+                <Button className="d-flex event-create gap-2 align-items-center" onClick={() => openModal(modal)}>
                     Créer
                     <PlusSquare/>
                 </Button>

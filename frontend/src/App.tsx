@@ -4,15 +4,20 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { Outlet } from "react-router-dom"
 import Header from "./components/header/Header"
+import { ModalProvider } from './context/ModalContext'
+import CustomModal from './components/customModal/CustomModal'
 
 function App() {
   return (
-    <div className='d-flex flex-column w-100'>
-      <Header />
-      <div className="px-4">
-        <Outlet />
+    <ModalProvider>
+      <div className='d-flex flex-column w-100'>
+        <Header />
+        <div className="px-4">
+          <Outlet />
+          <CustomModal/>
+        </div>
       </div>
-    </div>
+    </ModalProvider>
   )
 }
 
