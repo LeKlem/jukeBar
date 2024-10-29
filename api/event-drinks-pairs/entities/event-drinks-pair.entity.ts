@@ -30,4 +30,10 @@ export class EventDrinksPair {
 
   @Column('decimal', { precision: 6, scale: 2 })
   price_sub_2: number;
+
+  @Column('decimal', { precision: 6, scale: 2 })
+  min_price_1: number;
+
+  @Column('decimal', { precision: 6, scale: 2 })
+  min_price_2: number;
 }

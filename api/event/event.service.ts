@@ -28,10 +28,7 @@ export class EventService {
       where: { active: true },
       order: { id: 'DESC' },
     });
-  }
-  
-  
-
+  }  
   update(id: number, updateEventDto: UpdateEventDto) {
     return `This action updates a #${id} event`;
   }
