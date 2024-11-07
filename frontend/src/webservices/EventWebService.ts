@@ -18,3 +18,7 @@ export const getEvents = async (): Promise<EventDTO[]> => {
 export const createEvent = async (): Promise<EventDTO> => {
     return (await axios.post(url, {}, config)).data as EventDTO;
 }
+
+export const activateEvent = async (eventId: number) => {
+    console.log('bonjour ' + eventId);
+}
