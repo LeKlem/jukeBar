@@ -17,7 +17,7 @@ export default function EventDetails() {
     return (
         <>
             <h1>Evènement du {date.toLocaleDateString()}</h1>
-            <DrinkPairForm drinks={data.drinks}/>
+            <DrinkPairForm drinks={data.drinks} eventId={event.id}/>
         </>
     )
 }
