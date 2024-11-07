@@ -36,8 +36,8 @@ export class DrinkService {
   }
 
   async update(id: number, updateDrinkDto: UpdateDrinkDto) {
-    const contract = await this.drinkRepository.findOneBy({ id });
-    if (!contract) {
+    const drink = await this.drinkRepository.findOneBy({ id });
+    if (!drink) {
       throw new HttpException({ message: 'Drink not found.' }, HttpStatus.NOT_FOUND);
     } else {
       await this.drinkRepository.update(id, { ...updateDrinkDto });

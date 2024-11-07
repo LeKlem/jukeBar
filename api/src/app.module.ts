@@ -14,6 +14,8 @@ import { UsersModule } from 'users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
 import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.module';
+import { PriceHistoryModule } from '../price-history/price-history.module';
+import { PriceHistory } from 'price-history/entities/price-history.entity';
 
 
 @Module({
@@ -25,10 +27,10 @@ import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.m
       username: 'root',
       password: '',
       database: 'jukebar',
-      entities: [Event, Drink, User, EventDrinksPair],
+      entities: [Event, Drink, User, EventDrinksPair, PriceHistory],
       synchronize: true,
     }),
-  DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, JwtModule
+  DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, JwtModule, PriceHistoryModule
   ],
   controllers: [AppController],
   providers: [AppService,
