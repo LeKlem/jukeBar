@@ -1,5 +1,10 @@
-export interface Event {
+export interface EventDTO {
     id: number,
-    date: string,
+    date: Date,
+    active: boolean
+}
+
+export interface CreateEventDTO {
+    date: Date
     active: boolean
 }
