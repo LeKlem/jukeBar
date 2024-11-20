@@ -2,64 +2,71 @@ import { Button, FormControl, FormGroup, FormLabel, FormSelect } from "react-boo
 import { DrinkDTO } from "../../../../models/DrinkModels";
 import { Form } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
-import { CreateDrinkPairDTO } from "../../../../models/DrinkPairModels";
-import { createDrinkPair } from "../../../../webservices/DrinkPairWebService";
-
-interface InputDrinksData {
-    drink1?: DrinkDTO,
-    drink2?: DrinkDTO,
-    drinkInc1: number,
-    drinkInc2: number,
-    drinkDec1: number,
-    drinkDec2: number
-}
+import { CreateDrinkPairDTO, DrinkPairDTO } from "../../../../models/DrinkPairModels";
+import { createDrinkPair, deleteEventPair, updateEventPair } from "../../../../webservices/DrinkPairWebService";
 
 interface DrinkPairFormProps {
     drinks: DrinkDTO[],
+    drinkPairs: DrinkPairDTO[]
     eventId: number
 }
 
 export default function DrinkPairForm(props: DrinkPairFormProps) {
-    const [drinkInputs, setDrinkInputs] = useState<InputDrinksData[]>([]);
+    const [drinkInputs, setDrinkInputs] = useState<DrinkPairDTO[]>([]);
     const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
 
     useEffect(() => {
-        setDrinks(props.drinks);
+        setDrinks(props.drinks);      
+        setDrinkInputs(props.drinkPairs);
     }, [props.drinks]);
 
     const addDrinkInput = () => {
         setDrinkInputs(
             [
                 ...drinkInputs,
-                { drink1: undefined, drink2: undefined, drinkInc1: 0, drinkInc2: 0, drinkDec1: 0, drinkDec2: 0 }
+                { idDrink_1: undefined, idDrink_2: undefined, idEvent: undefined, price_inc_1: 0, price_inc_2: 0, price_sub_1: 0, price_sub_2: 0, min_price_1: 0, min_price_2: 0 }
             ]
         )
     }
 
     const deleteDrinkInput = (index: number) => {
+        const selectedDrink = drinkInputs[index];
         setDrinkInputs([...drinkInputs.filter((_, i) => i !== index)])
+        if (selectedDrink.id) {
+            deleteEventPair(selectedDrink.id);
+        }
     }
 
-    const onSubmitForm = async (event: FormEvent) => {
+    const onSubmitForm = (event: FormEvent) => {
         event.preventDefault();
-        drinkInputs.map(drinkPair => {
+        console.log(drinkInputs);
+
+        drinkInputs.map(async drinkPair => {
             const newPair: CreateDrinkPairDTO = {
                 idEvent: props.eventId,
-                idDrink_1: drinkPair.drink1?.id!,
-                idDrink_2: drinkPair.drink2?.id!,
-                price_inc_1: drinkPair.drinkInc1,
-                price_inc_2: drinkPair.drinkInc2,
-                price_sub_1: drinkPair.drinkDec1,
-                price_sub_2: drinkPair.drinkDec2
+                idDrink_1: drinkPair.idDrink_1?.id!,
+                idDrink_2: drinkPair.idDrink_2?.id!,
+                price_inc_1: drinkPair.price_inc_1 * 100,
+                price_inc_2: drinkPair.price_inc_2 * 100,
+                price_sub_1: drinkPair.price_sub_1 * 100,
+                price_sub_2: drinkPair.price_sub_2 * 100,
+                min_price_1: drinkPair.min_price_1 * 100,
+                min_price_2: drinkPair.min_price_2 * 100
             }
-            const response = createDrinkPair(newPair)        
-            console.log(response);
+
+            console.log(typeof (newPair.price_inc_1));
+
+            if (drinkPair.id) {
+                await updateEventPair(drinkPair.id, newPair);
+                return
+            }
+            await createDrinkPair(newPair)
         })
     }
 
-    const getAvailableDrinks = (index: number, field: 'drink1' | 'drink2'): DrinkDTO[] => {
+    const getAvailableDrinks = (index: number, field: 'idDrink_1' | 'idDrink_2'): DrinkDTO[] => {
         const selectedDrinks = drinkInputs
-            .flatMap(pair => [pair.drink1, pair.drink2])
+            .flatMap(pair => [pair.idDrink_1, pair.idDrink_2])
             .filter(drink => drink !== undefined) as DrinkDTO[];
 
         const selectedIds = new Set(selectedDrinks.map(drink => drink.id));
@@ -70,14 +77,14 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
         return drinks.filter(drink => !selectedIds.has(drink.id));
     }
 
-    const displayDrinks = (index: number, field: 'drink1' | 'drink2') => {
+    const displayDrinks = (index: number, field: 'idDrink_1' | 'idDrink_2') => {
 
         return getAvailableDrinks(index, field).map((drink, index) => (
             <option value={drink.id} key={index}>{drink.name}</option>
         ))
     }
 
-    const onSelectDrink = (index: number, field: 'drink1' | 'drink2', value: number) => {
+    const onSelectDrink = (index: number, field: 'idDrink_1' | 'idDrink_2', value: number) => {
         const selectedDrink = props.drinks.find(drink => drink.id === value || null)
         const newPairs = [...drinkInputs];
 
@@ -88,7 +95,16 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
         setDrinkInputs(newPairs);
     }
 
-    const displayFields = (drinkPair: InputDrinksData, index: number, field: 'drink1' | 'drink2') => {
+    const onDrinkPriceChange = (
+        index: number,
+        label: 'price_inc_1' | 'price_inc_2' | 'price_sub_1' | 'price_sub_2' | 'min_price_1' | 'min_price_2',
+        value: number
+    ) => {
+        drinkInputs[index][label] = value;
+        setDrinkInputs(drinkInputs);
+    }
+
+    const displayFields = (drinkPair: DrinkPairDTO, index: number, field: 'idDrink_1' | 'idDrink_2') => {
         return (
             <div className={field}>
                 <FormSelect
@@ -101,11 +117,33 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                 <div className="prices d-flex mt-2 gap-1">
                     <FormGroup className="col">
                         <FormLabel>Prix d'incrément</FormLabel>
-                        <FormControl type="number" />
+                        <FormControl
+                            type="number"
+                            onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_inc_1' : 'price_inc_2', parseFloat(e.target.value))}
+                            step={0.1}
+                            min={0}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_inc_1 : drinkPair.price_inc_2}
+                        />
                     </FormGroup>
                     <FormGroup className="col">
                         <FormLabel>Prix de décrément</FormLabel>
-                        <FormControl type="number" />
+                        <FormControl
+                            type="number"
+                            onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_sub_1' : 'price_sub_2', parseFloat(e.target.value))}
+                            step={0.1}
+                            min={0}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_sub_1 : drinkPair.price_sub_2}
+                        />
+                    </FormGroup>
+                    <FormGroup className="col">
+                        <FormLabel>Prix minimum</FormLabel>
+                        <FormControl
+                            type="number"
+                            onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'min_price_1' : 'min_price_2', parseFloat(e.target.value))}
+                            step={0.5}
+                            min={0}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.min_price_1 : drinkPair.min_price_2}
+                        />
                     </FormGroup>
                 </div>
             </div>
@@ -115,13 +153,13 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
     return (
         <>
             <Button onClick={addDrinkInput}>Ajouter</Button>
-            <Form onSubmit={(e) => onSubmitForm(e)} className="d-flex flex-column gap-4">
+            <Form onSubmit={(e) => onSubmitForm(e)} className="d-flex align-items-center flex-column gap-4">
                 {drinkInputs.map((drinkPair, index) => (
-                    <div className="drink-pair col-10 offset-2" key={index}>
+                    <div className="drink-pair" key={index}>
                         <FormLabel>Paire de boisson</FormLabel>
                         <div className="d-flex gap-2">
-                            {displayFields(drinkPair, index, 'drink1')}
-                            {displayFields(drinkPair, index, 'drink2')}
+                            {displayFields(drinkPair, index, 'idDrink_1')}
+                            {displayFields(drinkPair, index, 'idDrink_2')}
                             <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger">Delete</Button>
                         </div>
                     </div>
