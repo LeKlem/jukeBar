@@ -93,11 +93,17 @@ export class EventDrinksPairsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log(updateEventDrinksPairDto);
+    console.log(updateEventDrinksPairDto as DeepPartial<EventDrinksPair>);
     const updatedPair = this.pairsRepository.merge(
       pair,
       updateEventDrinksPairDto as DeepPartial<EventDrinksPair>,
     );
+    const drink1 = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_1 });
+    const drink2 = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_2 });
+    updatedPair.idDrink_1 = drink1;
+    updatedPair.idDrink_2 = drink2;
+    console.log(updatedPair);
+    
     return this.pairsRepository.save(updatedPair);
   }
 
