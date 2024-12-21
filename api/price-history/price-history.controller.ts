@@ -7,9 +7,9 @@ import { UpdatePriceHistoryDto } from './dto/update-price-history.dto';
 export class PriceHistoryController {
   constructor(private readonly priceHistoryService: PriceHistoryService) {}
 
-  @Post()
-  create(@Body() createPriceHistoryDto: CreatePriceHistoryDto) {
-    return this.priceHistoryService.create(createPriceHistoryDto);
+  @Post('/buy/:id')
+  buy(@Param('id') id: string, @Body() isDrinkOne: Boolean) {
+    return this.priceHistoryService.buy(+id, isDrinkOne);
   }
 
   @Get()
@@ -30,5 +30,9 @@ export class PriceHistoryController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.priceHistoryService.remove(+id);
+  }
+  @Post('/init/:id')
+  init(@Param('id') id: string) {
+    return this.priceHistoryService.init(+id);
   }
 }

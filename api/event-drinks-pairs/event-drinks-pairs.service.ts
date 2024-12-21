@@ -86,9 +86,24 @@ export class EventDrinksPairsService {
     if (!pair) {
       throw new HttpException({ message: 'Pair not found.' }, HttpStatus.NOT_FOUND);
     }
-
+    if (updateEventDrinksPairDto.idDrink_1) {
+      const drinkOne = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_1 });
+      if (!drinkOne) {
+        throw new HttpException({ message: 'Drink 1 not found.' }, HttpStatus.BAD_REQUEST);
+      }
+      pair.idDrink_1 = drinkOne;
+    }
+  
+    if (updateEventDrinksPairDto.idDrink_2) {
+      const drinkTwo = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_2 });
+      if (!drinkTwo) {
+        throw new HttpException({ message: 'Drink 2 not found.' }, HttpStatus.BAD_REQUEST);
+      }
+      pair.idDrink_2 = drinkTwo;
+    }
+    
     const updatedPair = this.pairsRepository.merge(pair, updateEventDrinksPairDto as DeepPartial<EventDrinksPair>);
-      return this.pairsRepository.save(updatedPair);
+    return this.pairsRepository.save(updatedPair);
   }
 
   remove(id: number) : Promise<DeleteResult> {
