@@ -22,11 +22,6 @@ export class PriceHistoryController {
     return this.priceHistoryService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePriceHistoryDto: UpdatePriceHistoryDto) {
-    return this.priceHistoryService.update(+id, updatePriceHistoryDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.priceHistoryService.remove(+id);

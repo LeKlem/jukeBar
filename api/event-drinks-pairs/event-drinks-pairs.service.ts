@@ -109,4 +109,11 @@ export class EventDrinksPairsService {
   remove(id: number) : Promise<DeleteResult> {
     return this.pairsRepository.delete(id);
   }
+  findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
+    return this.pairsRepository.find({
+      where : {idEvent : {id}},
+      relations: ['idEvent'],
+
+    });
+  }
 }

@@ -1,9 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreatePriceHistoryDto } from './dto/create-price-history.dto';
-import { UpdatePriceHistoryDto } from './dto/update-price-history.dto';
+import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PriceHistory } from './entities/price-history.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, MoreThan, Repository } from 'typeorm';
 import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
 import { Event } from '../event/entities/event.entity';
 
@@ -18,9 +16,12 @@ export class PriceHistoryService {
     private eventRepository: Repository<Event>,
   ) {}
 
-  async buy(id : number, isDrinkOne: Boolean) {
+  async buy(id : number, @Body() body: any) {
     const currentEvent = await this.eventRepository.findOne({
-      where: { active: true },
+      where: { 
+        createdAt: MoreThan(new Date(Date.now() - 15 * 60 * 60 * 1000)),
+        active : true 
+      },
       order: { id: 'DESC' },
     });
 
@@ -31,30 +32,43 @@ export class PriceHistoryService {
     });
 
 
-    //init if not done before
-    // this.init(id);
-
     //Get old price, increase it and save it
     var oldPrice = await this.priceRepository.findOne({
       where: { pairId : id },
       order: { id: 'DESC' },
     });
-    console.log(pairId);
-    if(isDrinkOne){
-      oldPrice.price_drink_1 += Number(pairId.price_inc_1);
-      oldPrice.price_drink_2 -= Number(pairId.price_sub_2);
+
+    //init if not done before
+    if(!oldPrice){
+      await this.init(id);
+      var oldPrice = await this.priceRepository.findOne({
+        where: { pairId : id },
+        order: { id: 'DESC' },
+      });
     }
-    else{
-      oldPrice.price_drink_1 -= Number(pairId.price_sub_1);
-      oldPrice.price_drink_2 += Number(pairId.price_inc_2)  ;
-    }
-
-
-    const newPrice = this.priceRepository.create(oldPrice);
-
+    let newPriceData = {
+      pairId: oldPrice.pairId,
+      price_drink_1: oldPrice.price_drink_1,
+      price_drink_2: oldPrice.price_drink_2,
+    };
+    if (body.isDrinkOne) {
+      newPriceData.price_drink_1 = Number(newPriceData.price_drink_1) + Number(pairId.price_inc_1);
+      if(pairId.min_price_2 < Number(newPriceData.price_drink_2) - Number(pairId.price_sub_2)){
+        newPriceData.price_drink_2 = Number(newPriceData.price_drink_2) - Number(pairId.price_sub_2);
+      }else{
+        newPriceData.price_drink_2 = pairId.min_price_2;
+      }
+    } else {
+      if(pairId.min_price_1 < Number(newPriceData.price_drink_1) - Number(pairId.price_sub_1)){
+        newPriceData.price_drink_1 = Number(newPriceData.price_drink_1) - Number(pairId.price_sub_1);
+      }else{
+        newPriceData.price_drink_1 = pairId.min_price_1;
+      }
+      newPriceData.price_drink_2 = Number(newPriceData.price_drink_2) + Number(pairId.price_inc_2);
+    }    
+    const newPrice = this.priceRepository.create(newPriceData);
     return await this.priceRepository.save(newPrice);
   }
-  
 
   findAll() {
     return this.priceRepository.find();
@@ -67,12 +81,8 @@ export class PriceHistoryService {
     });
   }
 
-  update(id: number, updatePriceHistoryDto: UpdatePriceHistoryDto) {
-    return `This action updates a #${id} priceHistory`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} priceHistory`;
+  remove(id: number) : Promise<DeleteResult> {
+    return this.priceRepository.delete(id);
   }
 
   //insert the default data
