@@ -34,8 +34,6 @@ export class EventDrinksPairsController {
 
   @Get('event/:eventId')
   getAllByEvent(@Param('eventId') eventId: string) {
-    console.log(eventId);
-    
     return this.eventDrinksPairsService.getAllByEvent(eventId)
   }
 }

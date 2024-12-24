@@ -4,6 +4,7 @@ import { Form } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { CreateDrinkPairDTO, DrinkPairDTO } from "../../../../models/DrinkPairModels";
 import { createDrinkPair, deleteEventPair, updateEventPair } from "../../../../webservices/DrinkPairWebService";
+import { Floppy, PlusSquare, TrashFill } from "react-bootstrap-icons";
 
 interface DrinkPairFormProps {
     drinks: DrinkDTO[],
@@ -16,7 +17,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
     const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
 
     useEffect(() => {
-        setDrinks(props.drinks);      
+        setDrinks(props.drinks);
         setDrinkInputs(props.drinkPairs);
     }, [props.drinks]);
 
@@ -39,7 +40,6 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
 
     const onSubmitForm = (event: FormEvent) => {
         event.preventDefault();
-        console.log(drinkInputs);
 
         drinkInputs.map(async drinkPair => {
             const newPair: CreateDrinkPairDTO = {
@@ -53,8 +53,6 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                 min_price_1: drinkPair.min_price_1 * 100,
                 min_price_2: drinkPair.min_price_2 * 100
             }
-
-            console.log(typeof (newPair.price_inc_1));
 
             if (drinkPair.id) {
                 await updateEventPair(drinkPair.id, newPair);
@@ -152,19 +150,23 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
 
     return (
         <>
-            <Button onClick={addDrinkInput}>Ajouter</Button>
-            <Form onSubmit={(e) => onSubmitForm(e)} className="d-flex align-items-center flex-column gap-4">
-                {drinkInputs.map((drinkPair, index) => (
-                    <div className="drink-pair" key={index}>
-                        <FormLabel>Paire de boisson</FormLabel>
-                        <div className="d-flex gap-2">
-                            {displayFields(drinkPair, index, 'idDrink_1')}
-                            {displayFields(drinkPair, index, 'idDrink_2')}
-                            <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger">Delete</Button>
+            <Form onSubmit={(e) => onSubmitForm(e)} className="d-flex flex-column gap-4 align-items-center mb-5">
+                <div className="col-3 d-flex gap-3">
+                    <Button onClick={addDrinkInput} className="d-flex align-items-center gap-2 col justify-content-center"><PlusSquare />Pair</Button>
+                    <Button className="col d-flex gap-2 align-items-center justify-content-center" type="submit"><Floppy />Enregistrer</Button>
+                </div>
+                <div className="drink-pairs d-flex flex-column gap-4">
+                    {drinkInputs.map((drinkPair, index) => (
+                        <div className="drink-pair border rounded px-3 py-3" key={index}>
+                            <FormLabel>Paire de boisson n°{index + 1}</FormLabel>
+                            <div className="d-flex gap-2">
+                                {displayFields(drinkPair, index, 'idDrink_1')}
+                                {displayFields(drinkPair, index, 'idDrink_2')}
+                                <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
+                            </div>
                         </div>
-                    </div>
-                ))}
-                <Button className="col-1" type="submit">add</Button>
+                    ))}
+                </div>
             </Form>
         </>
     )

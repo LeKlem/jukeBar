@@ -1,10 +1,11 @@
 export interface EventDTO {
     id: number,
     date: Date,
-    active: boolean
+    active: 'ACTIVE' | 'INACTIVE' | 'ENDED'
 }
 
 export interface CreateEventDTO {
     date: Date
-    active: boolean
+    active: 'ACTIVE' | 'INACTIVE' | 'ENDED'
 }
+

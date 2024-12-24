@@ -4,5 +4,5 @@ export class CreateEventDto {
     @IsNotEmpty()
     date: Date;
 
-    active: boolean = true;
+    active: 'ACTIVE' | 'INACTIVE' | 'ENDED';
 }

@@ -1,6 +1,6 @@
 import { Button, Table } from "react-bootstrap";
 import { EventDTO } from "../../../../models/EventModels";
-import { CheckSquareFill, ListTask, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
+import { CaretRightSquareFill, DashSquareFill, ListTask, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
 import './EventTable.scss'
 import { Link } from "react-router-dom";
 import { createEvent } from "../../../../webservices/EventWebService";
@@ -19,17 +19,28 @@ export default function EventTable(props: EventTableProps) {
     }, [props.events])
 
     const displayEvents = (events: EventDTO[]) => {
+        (events);
         return events.map((event, index) => (
             <tr key={index}>
                 <td>{event.id}</td>
                 <td>{ new Date(event.date).toLocaleDateString() }</td>
-                <td className="text-center">{event.active ? <CheckSquareFill size={25} color="green"/> : <XSquareFill size={25} color="red"/>}</td>
+                <td className="text-center">{checkStatus(event)}</td>
                 <td className="d-flex justify-content-center col">
-                    {/* TODO faire redirection quand page détails d'event dispo */}
                     <Link to={`events/${event.id}`} className="btn btn-outline-primary"><ListTask/></Link>
                 </td>
             </tr>
         ))
+    }
+
+    const checkStatus = (event: EventDTO) => {
+        switch (event.active) {
+            case 'ACTIVE':
+                return (<CaretRightSquareFill size={25} color="green"/>)
+            case 'INACTIVE':
+                return (<XSquareFill size={25} color="red"/>)
+            case 'ENDED':
+                return (<DashSquareFill size={25} color="red"/>)
+        }
     }
 
     const onCreateEvent = async () => {
@@ -53,7 +64,7 @@ export default function EventTable(props: EventTableProps) {
                         <tr>
                             <th>Numéro</th>
                             <th>Date</th>
-                            <th className="text-center">Actif</th>
+                            <th className="text-center">Status</th>
                             <th className="text-center">Actions</th>
                         </tr>
                     </thead>
