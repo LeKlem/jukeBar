@@ -21,7 +21,6 @@ export class EventDrinksPairsService {
   ) {}
 
   async create(createEventDrinksPairDto: CreateEventDrinksPairDto) {
-    console.log(EVENT_TTL);
     const drinkOne = await this.drinkRepository.findOneBy({id: createEventDrinksPairDto.idDrink_1});
     const drinkTwo = await this.drinkRepository.findOneBy({id: createEventDrinksPairDto.idDrink_2});
     if(!drinkOne || !drinkTwo){
