@@ -30,6 +30,7 @@ export class EventService {
   }
   getActive(): Promise<Event | null> {
     return this.eventRepository.findOne({
+
       where: { 
         createdAt: MoreThan(new Date(Date.now() - 15 * 60 * 60 * 1000)),
         active : true
@@ -45,6 +46,18 @@ export class EventService {
 
   remove(id: number) : Promise<DeleteResult> {
     return this.eventRepository.delete(id);
+  }
+//see if necessary
+  async activate(id: number) : Promise<Event> {
+    const event = await this.eventRepository.findOneBy({id});
+    event.active = 'ACTIVE';
+    return await this.eventRepository.save(event);
+  }
+
+  async stop(id: number): Promise<Event> {
+    const event = await this.eventRepository.findOneBy({id});
+    event.active = 'ENDED';
+    return await this.eventRepository.save(event);
   }
 
 }

@@ -36,4 +36,9 @@ export class EventDrinksPairsController {
   remove(@Param('id') id: number) {
     return this.eventDrinksPairsService.remove(id);
   }
+
+  @Get('event/:eventId')
+  getAllByEvent(@Param('eventId') eventId: string) {
+    return this.eventDrinksPairsService.getAllByEvent(eventId)
+  }
 }
