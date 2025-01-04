@@ -1,0 +1,1 @@
+export const EVENT_TTL = 15 * 60 * 60 * 1000; //Set to 15 hour
