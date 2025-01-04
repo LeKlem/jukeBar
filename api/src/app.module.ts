@@ -15,7 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
 import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.module';
 import { PriceHistoryModule } from '../price-history/price-history.module';
-import { PriceHistory } from 'price-history/entities/price-history.entity';
+import { PriceHistory } from '../price-history/entities/price-history.entity';
 
 
 @Module({
@@ -30,7 +30,7 @@ import { PriceHistory } from 'price-history/entities/price-history.entity';
       entities: [Event, Drink, User, EventDrinksPair, PriceHistory],
       synchronize: true,
     }),
-  DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, JwtModule, PriceHistoryModule
+  DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, PriceHistoryModule, JwtModule
   ],
   controllers: [AppController],
   providers: [AppService,

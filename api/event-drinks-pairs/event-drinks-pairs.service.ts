@@ -91,15 +91,23 @@ export class EventDrinksPairsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const updatedPair = this.pairsRepository.merge(
-      pair,
-      updateEventDrinksPairDto as DeepPartial<EventDrinksPair>,
-    );
-    const drink1 = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_1 });
-    const drink2 = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_2 });
-    updatedPair.idDrink_1 = drink1;
-    updatedPair.idDrink_2 = drink2;
+    if (updateEventDrinksPairDto.idDrink_1) {
+      const drinkOne = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_1 });
+      if (!drinkOne) {
+        throw new HttpException({ message: 'Drink 1 not found.' }, HttpStatus.BAD_REQUEST);
+      }
+      pair.idDrink_1 = drinkOne;
+    }
+  
+    if (updateEventDrinksPairDto.idDrink_2) {
+      const drinkTwo = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_2 });
+      if (!drinkTwo) {
+        throw new HttpException({ message: 'Drink 2 not found.' }, HttpStatus.BAD_REQUEST);
+      }
+      pair.idDrink_2 = drinkTwo;
+    }
     
+    const updatedPair = this.pairsRepository.merge(pair, updateEventDrinksPairDto as DeepPartial<EventDrinksPair>);
     return this.pairsRepository.save(updatedPair);
   }
 
@@ -107,18 +115,11 @@ export class EventDrinksPairsService {
     return this.pairsRepository.delete(id);
   }
 
-  async getAllByEvent(eventId: string): Promise<EventDrinksPair[]> {
-    return await this.pairsRepository.find({
-      relations: {
-        idEvent: true,
-        idDrink_1: true,
-        idDrink_2: true,
-      },
-      where: {
-        idEvent: {
-          id: parseInt(eventId),
-        },
-      },
+  findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
+    return this.pairsRepository.find({
+      where : {idEvent : {id}},
+      relations: ['idEvent'],
+
     });
   }
 }

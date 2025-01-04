@@ -6,7 +6,7 @@ export class Event {
   id: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  date: Date;
+  createdAt: Date;
 
   @Column({ default: 'INACTIVE' })
   active: 'ACTIVE' | 'INACTIVE' | 'ENDED';
