@@ -26,8 +26,8 @@ export class PriceHistoryController {
   remove(@Param('id') id: string) {
     return this.priceHistoryService.remove(+id);
   }
-  @Post('/init/:id')
-  init(@Param('id') id: string) {
-    return this.priceHistoryService.init(+id);
-  }
+  // @Post('/init/:id')
+  // init(@Param('id') id: string) {
+  //   return this.priceHistoryService.init(+id);
+  // }
 }

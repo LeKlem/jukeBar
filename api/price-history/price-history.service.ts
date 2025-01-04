@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, MoreThan, Repository } from 'typeorm';
 import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
 import { Event } from '../event/entities/event.entity';
+import { EVENT_TTL } from "../const/const";
+
 
 @Injectable()
 export class PriceHistoryService {
@@ -19,7 +21,7 @@ export class PriceHistoryService {
   async buy(id : number, @Body() body: any) {
     const currentEvent = await this.eventRepository.findOne({
       where: { 
-        createdAt: MoreThan(new Date(Date.now() - 15 * 60 * 60 * 1000)),
+        createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
         active : true 
       },
       order: { id: 'DESC' },

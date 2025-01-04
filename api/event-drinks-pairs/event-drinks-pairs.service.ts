@@ -3,10 +3,12 @@ import { CreateEventDrinksPairDto } from './dto/create-event-drinks-pair.dto';
 import { UpdateEventDrinksPairDto } from './dto/update-event-drinks-pair.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventDrinksPair } from './entities/event-drinks-pair.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, MoreThan, Repository } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
 import { Event } from 'event/entities/event.entity';
 import { DeepPartial } from 'typeorm';
+import { EVENT_TTL } from "../const/const";
+
 @Injectable()
 export class EventDrinksPairsService {
   constructor(
@@ -19,37 +21,38 @@ export class EventDrinksPairsService {
   ) {}
 
   async create(createEventDrinksPairDto: CreateEventDrinksPairDto) {
-    const drinkOne = await this.drinkRepository.findOneBy({
-      id: createEventDrinksPairDto.idDrink_1,
-    });
-    const drinkTwo = await this.drinkRepository.findOneBy({
-      id: createEventDrinksPairDto.idDrink_2,
-    });
-    if (!drinkOne || !drinkTwo) {
+    const drinkOne = await this.drinkRepository.findOneBy({id: createEventDrinksPairDto.idDrink_1});
+    const drinkTwo = await this.drinkRepository.findOneBy({id: createEventDrinksPairDto.idDrink_2});
+    if(!drinkOne || !drinkTwo){
       throw new HttpException(
         { message: 'One of the specified drink does not exist' },
         HttpStatus.BAD_REQUEST,
       );
     }
-    //make sure none of the drink are already selected for this event.
-    const currentEvent = await this.eventRepository.findOne({
-      where: { id: createEventDrinksPairDto.idEvent },
-    });
+    const activeEvent = await this.eventRepository.findOne({
+          where: { 
+            createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
+            active : true
+          },
+          order: { id: 'DESC' },
+        });
 
-    if (!currentEvent) {
+    if(!activeEvent){
       throw new HttpException(
-        { message: 'The specified event does not exist' },
+        { message: 'Impossible to create, there is no currently active event' },
         HttpStatus.BAD_REQUEST,
       );
     }
+  
     const existingPair = await this.pairsRepository.findOne({
       where: [
-        { idEvent: currentEvent, idDrink_1: drinkOne },
-        { idEvent: currentEvent, idDrink_2: drinkOne },
-        { idEvent: currentEvent, idDrink_1: drinkTwo },
-        { idEvent: currentEvent, idDrink_2: drinkTwo },
+        { idEvent: activeEvent, idDrink_1: drinkOne },
+        { idEvent: activeEvent, idDrink_2: drinkOne },
+        { idEvent: activeEvent, idDrink_1: drinkTwo },
+        { idEvent: activeEvent, idDrink_2: drinkTwo },
       ],
     });
+    
     if (existingPair) {
       throw new HttpException(
         { message: 'One of the drinks is already selected for this event' },
@@ -58,11 +61,11 @@ export class EventDrinksPairsService {
     }
     const newPair = this.pairsRepository.create({
       ...createEventDrinksPairDto,
-      idEvent: currentEvent,
+      idEvent: activeEvent,
       idDrink_1: drinkOne,
       idDrink_2: drinkTwo,
     });
-
+  
     return await this.pairsRepository.save(newPair);
   }
 
@@ -71,7 +74,7 @@ export class EventDrinksPairsService {
       relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
     });
   }
-
+  
   findOne(id: number) {
     return this.pairsRepository.findOne({
       where: { id },
@@ -84,12 +87,9 @@ export class EventDrinksPairsService {
       where: { id },
       relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
     });
-
+  
     if (!pair) {
-      throw new HttpException(
-        { message: 'Pair not found.' },
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException({ message: 'Pair not found.' }, HttpStatus.NOT_FOUND);
     }
     if (updateEventDrinksPairDto.idDrink_1) {
       const drinkOne = await this.drinkRepository.findOneBy({ id: updateEventDrinksPairDto.idDrink_1 });
@@ -111,14 +111,13 @@ export class EventDrinksPairsService {
     return this.pairsRepository.save(updatedPair);
   }
 
-  remove(id: number): Promise<DeleteResult> {
+  remove(id: number) : Promise<DeleteResult> {
     return this.pairsRepository.delete(id);
   }
-
   findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
     return this.pairsRepository.find({
       where : {idEvent : {id}},
-      relations: ['idEvent'],
+      relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
 
     });
   }
