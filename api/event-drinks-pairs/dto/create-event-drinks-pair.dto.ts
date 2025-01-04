@@ -1,6 +1,9 @@
 import { IsNumber, IsPositive } from 'class-validator';
 
 export class CreateEventDrinksPairDto {
+  @IsNumber()
+  @IsPositive()
+  idEvent: number;
 
   @IsNumber()
   @IsPositive()
