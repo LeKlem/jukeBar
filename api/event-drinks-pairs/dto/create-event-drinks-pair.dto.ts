@@ -27,9 +27,9 @@ export class CreateEventDrinksPairDto {
 
   @IsNumber()
   @IsPositive()
-  minPrice_1 : number;
+  min_price_1 : number;
   
   @IsNumber()
   @IsPositive()
-  minPrice_2 : number;
+  min_price_2 : number;
 }

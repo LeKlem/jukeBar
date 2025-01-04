@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { EventDrinksPair } from '../../event-drinks-pairs/entities/event-drinks-pair.entity';
 
+@Entity()
 export class PriceHistory {
     @PrimaryGeneratedColumn()
     id: number;
