@@ -3,12 +3,10 @@ import { CreateEventDrinksPairDto } from './dto/create-event-drinks-pair.dto';
 import { UpdateEventDrinksPairDto } from './dto/update-event-drinks-pair.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventDrinksPair } from './entities/event-drinks-pair.entity';
-import { DeleteResult, MoreThan, Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
 import { Event } from 'event/entities/event.entity';
 import { DeepPartial } from 'typeorm';
-import { EVENT_TTL } from "../const/const";
-
 @Injectable()
 export class EventDrinksPairsService {
   constructor(
@@ -29,30 +27,25 @@ export class EventDrinksPairsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const activeEvent = await this.eventRepository.findOne({
-          where: { 
-            createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
-            active : true
-          },
-          order: { id: 'DESC' },
-        });
-
-    if(!activeEvent){
+    //make sure none of the drink are already selected for this event.
+    const currentEvent = await this.eventRepository.findOne({
+      where: { id: createEventDrinksPairDto.idEvent },
+    });
+  
+    if (!currentEvent) {
       throw new HttpException(
-        { message: 'Impossible to create, there is no currently active event' },
+        { message: 'The specified event does not exist' },
         HttpStatus.BAD_REQUEST,
       );
     }
-  
     const existingPair = await this.pairsRepository.findOne({
       where: [
-        { idEvent: activeEvent, idDrink_1: drinkOne },
-        { idEvent: activeEvent, idDrink_2: drinkOne },
-        { idEvent: activeEvent, idDrink_1: drinkTwo },
-        { idEvent: activeEvent, idDrink_2: drinkTwo },
+        { idEvent: currentEvent, idDrink_1: drinkOne },
+        { idEvent: currentEvent, idDrink_2: drinkOne },
+        { idEvent: currentEvent, idDrink_1: drinkTwo },
+        { idEvent: currentEvent, idDrink_2: drinkTwo },
       ],
     });
-    
     if (existingPair) {
       throw new HttpException(
         { message: 'One of the drinks is already selected for this event' },
@@ -61,13 +54,14 @@ export class EventDrinksPairsService {
     }
     const newPair = this.pairsRepository.create({
       ...createEventDrinksPairDto,
-      idEvent: activeEvent,
+      idEvent: currentEvent,
       idDrink_1: drinkOne,
       idDrink_2: drinkTwo,
     });
   
     return await this.pairsRepository.save(newPair);
   }
+  
 
   findAll(): Promise<EventDrinksPair[]> {
     return this.pairsRepository.find({
@@ -80,6 +74,7 @@ export class EventDrinksPairsService {
       where: { id },
       relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
     });
+  
   }
 
   async update(id: number, updateEventDrinksPairDto: UpdateEventDrinksPairDto) {
@@ -117,7 +112,7 @@ export class EventDrinksPairsService {
   findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
     return this.pairsRepository.find({
       where : {idEvent : {id}},
-      relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
+      relations: ['idEvent'],
 
     });
   }
