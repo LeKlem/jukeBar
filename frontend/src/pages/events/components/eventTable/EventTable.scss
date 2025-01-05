@@ -1,0 +1,17 @@
+.event-list {
+    height: 500px;
+    overflow-y: scroll;
+    thead {
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+    }
+}
+
+.title {
+    .event-create {
+        height: min-content;
+    }
+}

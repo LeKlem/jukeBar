@@ -3,6 +3,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, MoreThan, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
+import { EVENT_TTL } from "../const/const";
 
 @Injectable()
 export class EventService {
@@ -31,7 +32,7 @@ export class EventService {
   getActive(): Promise<Event | null> {
     return this.eventRepository.findOne({
       where: { 
-        createdAt: MoreThan(new Date(Date.now() - 15 * 60 * 60 * 1000)),
+        createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
         active : true
       },
       order: { id: 'DESC' },
@@ -46,5 +47,4 @@ export class EventService {
   remove(id: number) : Promise<DeleteResult> {
     return this.eventRepository.delete(id);
   }
-
 }

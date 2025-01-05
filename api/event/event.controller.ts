@@ -8,7 +8,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
+  create() {
     return this.eventService.create();
   }
   
@@ -35,4 +35,14 @@ export class EventController {
   remove(@Param('id') id: string) {
     return this.eventService.remove(+id);
   }
+
+  // @Get(':id/activate')
+  // activate(@Param('id') id: string) {
+  //   return this.eventService.activate(+id);
+  // }
+
+  // @Get(':id/stopEvent')
+  // stopEvent(@Param('id') id: string) {
+  //   return this.eventService.stop(+id);
+  // }
 }
