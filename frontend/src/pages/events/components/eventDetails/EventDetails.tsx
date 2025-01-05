@@ -18,16 +18,16 @@ export default function EventDetails() {
     const data = useLoaderData() as EventLoaderData;
 
     const event = data.event;
-    const date: Date = new Date(event.date);
+    const date: Date = new Date(event.createdAt);
 
     const getButtonByStatus = (event: EventDTO) => {
         switch (event.active) {
-            case 'ACTIVE':
+            case true:
                 return (<Button variant="danger d-flex align-items-center gap-2" onClick={() => stopEvent(event.id)}><StopFill size={25} /> Arrêter</Button>)
-            case 'ENDED':
-                return (<p>Evènement terminée</p>)
-            case 'INACTIVE':
-                return (<Button variant="success d-flex align-items-center gap-2"  onClick={() => activateEvent(event.id)}><PlayFill size={20}/>Commencer</Button>)
+            case false:
+                return (<p>Evènement terminé</p>)
+            // case 'INACTIVE':
+            //     return (<Button variant="success d-flex align-items-center gap-2"  onClick={() => activateEvent(event.id)}><PlayFill size={20}/>Commencer</Button>)
         }
     }
 
@@ -39,7 +39,7 @@ export default function EventDetails() {
                     {getButtonByStatus(event)}
                 </div>
             </div>
-            { event.active == 'INACTIVE' 
+            { event.active == true 
                 ? (<DrinkPairForm drinkPairs={data.drinkPairs} drinks={data.drinks} eventId={event.id} />)
                 : (<DrinkPairDetails />)}
         </>

@@ -23,7 +23,7 @@ export default function EventTable(props: EventTableProps) {
         return events.map((event, index) => (
             <tr key={index}>
                 <td>{event.id}</td>
-                <td>{ new Date(event.date).toLocaleDateString() }</td>
+                <td>{ new Date(event.createdAt).toLocaleDateString() }</td>
                 <td className="text-center">{checkStatus(event)}</td>
                 <td className="d-flex justify-content-center col">
                     <Link to={`events/${event.id}`} className="btn btn-outline-primary"><ListTask/></Link>
@@ -34,12 +34,12 @@ export default function EventTable(props: EventTableProps) {
 
     const checkStatus = (event: EventDTO) => {
         switch (event.active) {
-            case 'ACTIVE':
+            case true:
                 return (<CaretRightSquareFill size={25} color="green"/>)
-            case 'INACTIVE':
+            case false:
                 return (<XSquareFill size={25} color="red"/>)
-            case 'ENDED':
-                return (<DashSquareFill size={25} color="red"/>)
+            // case 'ENDED':
+            //     return (<DashSquareFill size={25} color="red"/>)
         }
     }
 

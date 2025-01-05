@@ -17,18 +17,28 @@ export class EventDrinksPairsController {
     return this.eventDrinksPairsService.findAll();
   }
 
+  @Get('/event/:id')
+  findAllyEvent(@Param('id') id : number) {
+    return this.eventDrinksPairsService.findAllByEvent(id);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventDrinksPairsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.eventDrinksPairsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDrinksPairDto: UpdateEventDrinksPairDto) {
-    return this.eventDrinksPairsService.update(+id, updateEventDrinksPairDto);
+  update(@Param('id') id: number, @Body() updateEventDrinksPairDto: UpdateEventDrinksPairDto) {
+    return this.eventDrinksPairsService.update(id, updateEventDrinksPairDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventDrinksPairsService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.eventDrinksPairsService.remove(id);
+  } 
+
+  @Get('event/:eventId')
+  getAllByEvent(@Param('eventId') eventId: number) {
+    return this.eventDrinksPairsService.findAllByEvent(eventId)
   }
 }

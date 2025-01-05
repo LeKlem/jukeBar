@@ -36,13 +36,13 @@ export class EventController {
     return this.eventService.remove(+id);
   }
 
-  @Get(':id/activate')
-  activate(@Param('id') id: string) {
-    return this.eventService.activate(+id);
-  }
+  // @Get(':id/activate')
+  // activate(@Param('id') id: string) {
+  //   return this.eventService.activate(+id);
+  // }
 
-  @Get(':id/stopEvent')
-  stopEvent(@Param('id') id: string) {
-    return this.eventService.stop(+id);
-  }
+  // @Get(':id/stopEvent')
+  // stopEvent(@Param('id') id: string) {
+  //   return this.eventService.stop(+id);
+  // }
 }

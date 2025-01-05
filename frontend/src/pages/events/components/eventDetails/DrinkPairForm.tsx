@@ -114,7 +114,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                 </FormSelect>
                 <div className="prices d-flex mt-2 gap-1">
                     <FormGroup className="col">
-                        <FormLabel>Prix d'incrément</FormLabel>
+                        <FormLabel>Incrémentation</FormLabel>
                         <FormControl
                             type="number"
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_inc_1' : 'price_inc_2', parseFloat(e.target.value))}
@@ -124,7 +124,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                         />
                     </FormGroup>
                     <FormGroup className="col">
-                        <FormLabel>Prix de décrément</FormLabel>
+                        <FormLabel>Décrémentation</FormLabel>
                         <FormControl
                             type="number"
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_sub_1' : 'price_sub_2', parseFloat(e.target.value))}
