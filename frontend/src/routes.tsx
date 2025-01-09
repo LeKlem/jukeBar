@@ -5,9 +5,9 @@ import Login from "./pages/Login";
 import Drinks from "./pages/drinks/Drinks";
 import drinkLoader from "./pages/drinks/DrinkLoader";
 import EventDetails from "./pages/events/components/eventDetails/EventDetails";
-import BuyDrinks from "./pages/events/components/eventBuyDrinks/buyDrinks";
-
 import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader";
+import BuyDrinks from "./pages/events/components/eventBuyDrinks/BuyDrinks";
+import Graph from "./pages/graphs/Graph";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: 'login',
     element: <Login />
+  },
+  {
+    path: 'graphs',
+    element: <Graph  />
   }
 ]);
 

@@ -16,6 +16,7 @@ import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.e
 import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.module';
 import { PriceHistoryModule } from '../price-history/price-history.module';
 import { PriceHistory } from '../price-history/entities/price-history.entity';
+import { WebSocketService } from 'price-history/websockets/websocket.service';
 
 
 @Module({

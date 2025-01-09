@@ -6,6 +6,7 @@ import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.e
 import { Event } from '../event/entities/event.entity';
 import { findManyPrices } from './dto/find-many-prices.dto';
 import { EVENT_TTL } from 'const/const';
+import { PriceHistoryGateway } from './websockets/websocket.gateway';
 
 @Injectable()
 export class PriceHistoryService {
@@ -16,6 +17,7 @@ export class PriceHistoryService {
     private pairRepository: Repository<EventDrinksPair>,
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    private priceHistoryGateway: PriceHistoryGateway,
   ) {}
 
   async buy(id : number, @Body() body: any) {
@@ -73,6 +75,13 @@ export class PriceHistoryService {
       newPriceData.price_drink_2 = Number(newPriceData.price_drink_2) + Number(pairId.price_inc_2);
     }    
     const newPrice = this.priceRepository.create(newPriceData);
+
+    this.priceHistoryGateway.sendPriceUpdate({
+      pairId: newPrice.pairId,
+      price_drink_1: newPrice.price_drink_1,
+      price_drink_2: newPrice.price_drink_2,
+      timestamp: new Date().toISOString(),
+    });
     return await this.priceRepository.save(newPrice);
   }
 
@@ -142,7 +151,6 @@ export class PriceHistoryService {
         })
         .getMany();
 
-    // Optionally initialize missing prices for pairs not found
     const foundPairIds = new Set(prices.map((price) => price.pairId));
     const missingPairIds = ids.filter((id) => !foundPairIds.has(id));
 
