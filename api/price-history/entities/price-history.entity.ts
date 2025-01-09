@@ -5,18 +5,15 @@ import { EventDrinksPair } from '../../event-drinks-pairs/entities/event-drinks-
 export class PriceHistory {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @ManyToOne(() => EventDrinksPair)
-    @JoinColumn({ name: 'pairId' })
+    @Column()
     pairId: number;
 
     @Column('decimal', { precision: 6, scale: 2 })
-    price_drink_1 : number;
+    price_drink_1: number;
 
     @Column('decimal', { precision: 6, scale: 2 })
-    price_drink_2 : number;
+    price_drink_2: number;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    time : Date;
-    
+    time: Date;
 }

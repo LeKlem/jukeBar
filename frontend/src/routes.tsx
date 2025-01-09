@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Drinks from "./pages/drinks/Drinks";
 import drinkLoader from "./pages/drinks/DrinkLoader";
 import EventDetails from "./pages/events/components/eventDetails/EventDetails";
+import BuyDrinks from "./pages/events/components/eventBuyDrinks/buyDrinks";
+
 import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader";
 
 const router = createBrowserRouter([
@@ -26,8 +28,13 @@ const router = createBrowserRouter([
         path: 'events',
         children: [
           {
-            path: ':eventId',
+            path: 'pair/:eventId',
             element: <EventDetails/>,
+            loader: EventLoader,
+          },
+          {
+            path: 'manage/:eventId',
+            element: <BuyDrinks/>,
             loader: EventLoader,
           }
         ]

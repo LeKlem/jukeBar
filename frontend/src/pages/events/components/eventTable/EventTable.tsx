@@ -1,6 +1,6 @@
 import { Button, Table } from "react-bootstrap";
 import { EventDTO } from "../../../../models/EventModels";
-import { CaretRightSquareFill, DashSquareFill, ListTask, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
+import { CaretRightSquareFill, CupStraw, CurrencyDollar, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
 import './EventTable.scss'
 import { Link } from "react-router-dom";
 import { createEvent } from "../../../../webservices/EventWebService";
@@ -26,7 +26,10 @@ export default function EventTable(props: EventTableProps) {
                 <td>{ new Date(event.createdAt).toLocaleDateString() }</td>
                 <td className="text-center">{checkStatus(event)}</td>
                 <td className="d-flex justify-content-center col">
-                    <Link to={`events/${event.id}`} className="btn btn-outline-primary"><ListTask/></Link>
+                    <Link to={`events/pair/${event.id}`} className="btn btn-outline-primary"><CupStraw/></Link>
+                    <p>&nbsp;</p>
+                    <Link to={`events/manage/${event.id}`} className="btn btn-outline-primary"><CurrencyDollar/></Link>
+
                 </td>
             </tr>
         ))
@@ -38,8 +41,6 @@ export default function EventTable(props: EventTableProps) {
                 return (<CaretRightSquareFill size={25} color="green"/>)
             case false:
                 return (<XSquareFill size={25} color="red"/>)
-            // case 'ENDED':
-            //     return (<DashSquareFill size={25} color="red"/>)
         }
     }
 
@@ -52,7 +53,6 @@ export default function EventTable(props: EventTableProps) {
         <>
             <div className="title d-flex justify-content-between">
                 <h2>Evènements</h2>
-                {/* TODO faire la création d'évènement quand il y aura la route */}
                 <Button className="d-flex event-create gap-2 align-items-center" onClick={onCreateEvent}>
                     Créer
                     <PlusSquare/>

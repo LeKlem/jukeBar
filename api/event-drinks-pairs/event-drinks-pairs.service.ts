@@ -112,7 +112,7 @@ export class EventDrinksPairsService {
   findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
     return this.pairsRepository.find({
       where : {idEvent : {id}},
-      relations: ['idEvent'],
+      relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
 
     });
   }

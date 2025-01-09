@@ -4,8 +4,8 @@ import { DrinkDTO } from "../../../../models/DrinkModels";
 import DrinkPairForm from "./DrinkPairForm";
 import { DrinkPairDTO } from "../../../../models/DrinkPairModels";
 import { Button } from "react-bootstrap";
-import { PlayFill, StopFill } from "react-bootstrap-icons";
-import { activateEvent, stopEvent } from "../../../../webservices/EventWebService";
+import { StopFill } from "react-bootstrap-icons";
+import { stopEvent } from "../../../../webservices/EventWebService";
 import DrinkPairDetails from "./DrinkPairDetails";
 
 interface EventLoaderData {
