@@ -7,7 +7,8 @@ import drinkLoader from "./pages/drinks/DrinkLoader";
 import EventDetails from "./pages/events/components/eventDetails/EventDetails";
 import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader";
 import BuyDrinks from "./pages/events/components/eventBuyDrinks/BuyDrinks";
-import Graph from "./pages/graphs/Graph";
+import { PricesLoader } from "./pages/graphs/components/PriceLoader";
+import Graph from "./pages/graphs/pages/Graphs.tsx";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,8 @@ const router = createBrowserRouter([
   },
   {
     path: 'graphs',
-    element: <Graph  />
+    element: <Graph  />,
+    loader : PricesLoader
   }
 ]);
 

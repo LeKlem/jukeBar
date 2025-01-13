@@ -5,6 +5,7 @@ import './EventTable.scss'
 import { Link } from "react-router-dom";
 import { createEvent } from "../../../../webservices/EventWebService";
 import { useEffect, useState } from "react";
+import { EVENT_TTL } from "../../../../const/const";
 
 
 interface EventTableProps {
@@ -36,10 +37,10 @@ export default function EventTable(props: EventTableProps) {
     }
 
     const checkStatus = (event: EventDTO) => {
-        switch (event.active) {
-            case true:
+        const eventDate = new Date(event.createdAt);
+        if(eventDate > new Date(Date.now() - EVENT_TTL) && event.active == true) {
                 return (<CaretRightSquareFill size={25} color="green"/>)
-            case false:
+        }else{
                 return (<XSquareFill size={25} color="red"/>)
         }
     }

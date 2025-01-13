@@ -11,7 +11,11 @@ export class PriceHistoryController {
   }
   @Post('/many/')
   findMany(@Body() findManyPrices : findManyPrices ) {
-    return this.priceHistoryService.findMany(findManyPrices);
+    return this.priceHistoryService.findMany(findManyPrices, true);
+  }
+  @Get('/getAll/')
+  getAll() {
+    return this.priceHistoryService.getAll();
   }
 
   @Get()

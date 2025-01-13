@@ -46,12 +46,12 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                 idEvent: props.eventId,
                 idDrink_1: drinkPair.idDrink_1?.id!,
                 idDrink_2: drinkPair.idDrink_2?.id!,
-                price_inc_1: drinkPair.price_inc_1 * 100,
-                price_inc_2: drinkPair.price_inc_2 * 100,
-                price_sub_1: drinkPair.price_sub_1 * 100,
-                price_sub_2: drinkPair.price_sub_2 * 100,
-                min_price_1: drinkPair.min_price_1 * 100,
-                min_price_2: drinkPair.min_price_2 * 100
+                price_inc_1: drinkPair.price_inc_1,
+                price_inc_2: drinkPair.price_inc_2,
+                price_sub_1: drinkPair.price_sub_1,
+                price_sub_2: drinkPair.price_sub_2,
+                min_price_1: drinkPair.min_price_1,
+                min_price_2: drinkPair.min_price_2,
             }
 
             if (drinkPair.id) {

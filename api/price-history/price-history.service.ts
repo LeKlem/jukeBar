@@ -7,6 +7,7 @@ import { Event } from '../event/entities/event.entity';
 import { findManyPrices } from './dto/find-many-prices.dto';
 import { EVENT_TTL } from 'const/const';
 import { PriceHistoryGateway } from './websockets/websocket.gateway';
+import { EventDrinksPairsService } from 'event-drinks-pairs/event-drinks-pairs.service';
 
 @Injectable()
 export class PriceHistoryService {
@@ -18,6 +19,7 @@ export class PriceHistoryService {
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
     private priceHistoryGateway: PriceHistoryGateway,
+    private eventsDrinksPairService : EventDrinksPairsService,
   ) {}
 
   async buy(id : number, @Body() body: any) {
@@ -59,6 +61,9 @@ export class PriceHistoryService {
       price_drink_1: oldPrice.price_drink_1,
       price_drink_2: oldPrice.price_drink_2,
     };
+    console.log(newPriceData);
+    console.log(pairId);
+
     if (body.isDrinkOne) {
       newPriceData.price_drink_1 = Number(newPriceData.price_drink_1) + Number(pairId.price_inc_1);
       if(pairId.min_price_2 < Number(newPriceData.price_drink_2) - Number(pairId.price_sub_2)){
@@ -130,22 +135,27 @@ export class PriceHistoryService {
  
   }
 
-  async findMany(findManyPrices : findManyPrices) {
+  async findMany(findManyPrices : findManyPrices, selectOne : boolean) {
     const ids = findManyPrices.ids;
     if (!ids || ids.length === 0) {
         throw new HttpException('No IDs provided.', HttpStatus.BAD_REQUEST);
     }
-
+    let selectPrice: string;
+    if (selectOne) {
+      selectPrice = 'Max(price.id)';
+    } else {
+      selectPrice = 'price.id';
+    }
+  
     const prices = await this.priceRepository
         .createQueryBuilder('price')
         .where('price.pairId IN (:...ids)', { ids })
         .andWhere((qb) => {
             const subQuery = qb
                 .subQuery()
-                .select('MAX(price.id)', 'maxId')
+                .select(selectPrice)
                 .from(PriceHistory, 'price')
                 .where('price.pairId IN (:...ids)', { ids })
-                .groupBy('price.pairId')
                 .getQuery();
             return `price.id IN (${subQuery})`;
         })
@@ -162,10 +172,9 @@ export class PriceHistoryService {
         .andWhere((qb) => {
             const subQuery = qb
                 .subQuery()
-                .select('MAX(price.id)', 'maxId')
+                .select('price.id')
                 .from(PriceHistory, 'price')
                 .where('price.pairId IN (:...ids)', { missingPairIds })
-                .groupBy('price.pairId')
                 .getQuery();
             return `price.id IN (${subQuery})`;
         })
@@ -174,5 +183,24 @@ export class PriceHistoryService {
     }
 
     return prices;
+  }
+
+  async getAll(){
+    const currentEvent = await this.eventRepository.findOne({
+      where: { 
+        createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
+        active : true 
+      },
+      order: { id: 'DESC' },
+    });
+    if(!currentEvent){
+      throw new HttpException({ message: 'Error : no active event at the moment' }, HttpStatus.BAD_REQUEST);
+    }
+    const pairs : EventDrinksPair[] = await this.eventsDrinksPairService.findAllByEvent(currentEvent.id);
+    const pairsID = pairs.map(pair => pair.id);
+    const obj = {
+      ids : pairsID
+    }
+    return await this.findMany(obj, false);
   }
 }

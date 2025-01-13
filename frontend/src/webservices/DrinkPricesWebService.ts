@@ -20,3 +20,6 @@ export const buyDrink = async(pairId : number, isDrinkOne : boolean) => {
     }
     return (await axios.post(`${url}/buy/${pairId}`, payload, config)).data;
 }
+export const getAllForActiveEvent = async() => {
+    return (await axios.get(`${url}/getAll/`, config)).data;
+}
