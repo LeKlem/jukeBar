@@ -17,6 +17,7 @@ import { EventDrinksPairsModule } from 'event-drinks-pairs//event-drinks-pairs.m
 import { PriceHistoryModule } from '../price-history/price-history.module';
 import { PriceHistory } from '../price-history/entities/price-history.entity';
 import { WebSocketService } from 'price-history/websockets/websocket.service';
+import {PriceHistoryGateway} from 'price-history/websockets/websocket.gateway'
 
 
 @Module({
@@ -34,7 +35,7 @@ import { WebSocketService } from 'price-history/websockets/websocket.service';
   DrinkModule, EventModule, UsersModule, EventDrinksPairsModule, PriceHistoryModule, JwtModule
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [AppService, PriceHistoryGateway
     // {
     //   provide: APP_GUARD,
     //   useClass: AuthGuard, 

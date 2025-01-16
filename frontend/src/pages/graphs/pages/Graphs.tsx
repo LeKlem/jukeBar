@@ -7,7 +7,7 @@ interface PricesLoaderData {
     prices: PriceHistoryDTO[]
 }
 
-export default function Home() {
+export default function Graph() {
     const data = useLoaderData() as PricesLoaderData;
     return (
     <>

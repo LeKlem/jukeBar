@@ -55,6 +55,12 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
             }
 
             if (drinkPair.id) {
+                newPair.min_price_1 *= 100;
+                newPair.min_price_2 *= 100;
+                newPair.price_inc_1 *= 100;
+                newPair.price_inc_2 *= 100;
+                newPair.price_sub_1 *= 100;
+                newPair.price_sub_2 *= 100;
                 await updateEventPair(drinkPair.id, newPair);
                 return
             }
@@ -120,7 +126,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_inc_1' : 'price_inc_2', parseFloat(e.target.value))}
                             step={0.1}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.price_inc_1 : drinkPair.price_inc_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_inc_1 * 100 : drinkPair.price_inc_2 * 100}
                         />
                     </FormGroup>
                     <FormGroup className="col">
@@ -130,7 +136,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_sub_1' : 'price_sub_2', parseFloat(e.target.value))}
                             step={0.1}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.price_sub_1 : drinkPair.price_sub_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_sub_1 * 100: drinkPair.price_sub_2 * 100}
                         />
                     </FormGroup>
                     <FormGroup className="col">
@@ -140,7 +146,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'min_price_1' : 'min_price_2', parseFloat(e.target.value))}
                             step={0.5}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.min_price_1 : drinkPair.min_price_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.min_price_1 * 100: drinkPair.min_price_2 * 100}
                         />
                     </FormGroup>
                 </div>

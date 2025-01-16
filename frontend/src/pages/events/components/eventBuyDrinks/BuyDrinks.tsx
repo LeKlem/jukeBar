@@ -12,11 +12,8 @@ interface EventLoaderData {
 
 export default function EventDetails() {
     const data = useLoaderData() as EventLoaderData;
-
     const event = data.event;
     const date: Date = new Date(event.createdAt);
-
-    
 
     return (
         <>

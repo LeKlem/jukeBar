@@ -20,6 +20,23 @@ export const buyDrink = async(pairId : number, isDrinkOne : boolean) => {
     }
     return (await axios.post(`${url}/buy/${pairId}`, payload, config)).data;
 }
-export const getAllForActiveEvent = async() => {
-    return (await axios.get(`${url}/getAll/`, config)).data;
+
+export const removeLastAction = async(pairId : number) => {
+    console.log(pairId)
+    return (await axios.delete(`${url}/${pairId}`, config)).data;
+}
+
+export const getAllForActiveEvent = async() => {    
+    try {
+        const response = await axios.get(`${url}/getAll/`, config);
+        return response.data;
+    } catch (error : any) {
+        if (error.response?.data?.message.includes("no active event")) {
+            alert("No currently active event");
+            return [];
+        }
+        throw error;
+    }
+    
+
 }

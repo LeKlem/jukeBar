@@ -1,7 +1,7 @@
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PriceHistory } from './entities/price-history.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, MoreThan, Repository } from 'typeorm';
+import { DeleteResult, MoreThan, Not, Repository } from 'typeorm';
 import { EventDrinksPair } from 'event-drinks-pairs/entities/event-drinks-pair.entity';
 import { Event } from '../event/entities/event.entity';
 import { findManyPrices } from './dto/find-many-prices.dto';
@@ -22,7 +22,7 @@ export class PriceHistoryService {
     private eventsDrinksPairService : EventDrinksPairsService,
   ) {}
 
-  async buy(id : number, @Body() body: any) {
+  async buy(id : number, @Body() body: any) {// TO DO : Improve to add data points witout changing data in non affected pairs 
     const currentEvent = await this.eventRepository.findOne({
       where: { 
         createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
@@ -39,8 +39,16 @@ export class PriceHistoryService {
         { id, idEvent: { id: currentEvent.id } },
       ],
     });
-  
+    console.log("pair id : " + id);
 
+    const otherPairs = await this.pairRepository.find({
+      where: [
+        {
+          id : Not(id),
+          idEvent : { id : currentEvent.id},
+        }
+      ],
+    });
 
     //Get old price, increase it and save it
     var oldPrice = await this.priceRepository.findOne({
@@ -61,9 +69,6 @@ export class PriceHistoryService {
       price_drink_1: oldPrice.price_drink_1,
       price_drink_2: oldPrice.price_drink_2,
     };
-    console.log(newPriceData);
-    console.log(pairId);
-
     if (body.isDrinkOne) {
       newPriceData.price_drink_1 = Number(newPriceData.price_drink_1) + Number(pairId.price_inc_1);
       if(pairId.min_price_2 < Number(newPriceData.price_drink_2) - Number(pairId.price_sub_2)){
@@ -87,6 +92,28 @@ export class PriceHistoryService {
       price_drink_2: newPrice.price_drink_2,
       timestamp: new Date().toISOString(),
     });
+
+    //get all other active pairs from event, and save them again
+    const otherPairIds = otherPairs.map(pairId => pairId.id); 
+    if(otherPairIds.length > 0 ){
+      const prices = await this.priceRepository
+      .createQueryBuilder('price')
+      .select('MAX(price.id), price_drink_1, price_drink_2')
+      .addSelect('price.pairId')
+      .where('price.pairId IN (:...otherPairIds)', { otherPairIds })
+      .groupBy('price.pairId')
+      .getRawMany();
+    prices.forEach((price) => {
+      const saveSamePrice = {
+        pairId : price.price_pairId,
+        price_drink_1: price.price_drink_1,
+        price_drink_2: price.price_drink_2,
+      } 
+      const samePrice = this.priceRepository.create(saveSamePrice);
+      this.priceRepository.save(samePrice);
+    });
+    }
+    
     return await this.priceRepository.save(newPrice);
   }
 
@@ -95,7 +122,6 @@ export class PriceHistoryService {
   }
 
   async findOne(id: number) {
-    console.log('here');
     const price = await this.priceRepository.findOne({
         where: { pairId: id },
         order: { id: 'DESC' },
@@ -111,8 +137,12 @@ export class PriceHistoryService {
     return price;
   }
 
-  remove(id: number) : Promise<DeleteResult> {
-    return this.priceRepository.delete(id);
+  async remove(id: number) : Promise<DeleteResult> {//Edit to remove last action on a pair using its id and not the actionId
+    const lastPrice = await this.priceRepository.findOne({
+      where: { pairId : id },
+      order : {id : 'DESC'},
+    });
+    return this.priceRepository.delete(lastPrice);
   }
 
   //insert the default data
@@ -148,33 +178,35 @@ export class PriceHistoryService {
     }
   
     const prices = await this.priceRepository
-        .createQueryBuilder('price')
-        .where('price.pairId IN (:...ids)', { ids })
-        .andWhere((qb) => {
-            const subQuery = qb
-                .subQuery()
-                .select(selectPrice)
-                .from(PriceHistory, 'price')
-                .where('price.pairId IN (:...ids)', { ids })
-                .getQuery();
-            return `price.id IN (${subQuery})`;
-        })
-        .getMany();
+  .createQueryBuilder('price')
+  .where('price.pairId IN (:...ids)', { ids })
+  .andWhere((qb) => {
+    const subQuery = qb
+      .subQuery()
+      .select(selectPrice)
+      .from(PriceHistory, 'price')
+      .where('price.pairId IN (:subIds)', { subIds: ids })
+      .groupBy('price.pairId')
+      .getQuery();
+    return `price.id IN (${subQuery})`;
+  })
+  .orderBy('price.id', 'DESC')
+  .limit(15)
+  .getMany();
 
     const foundPairIds = new Set(prices.map((price) => price.pairId));
     const missingPairIds = ids.filter((id) => !foundPairIds.has(id));
-
     if (missingPairIds.length > 0) {
         await Promise.all(missingPairIds.map((id) => this.init(id)));
         const newPrices = await this.priceRepository
         .createQueryBuilder('price')
-        .where('price.pairId IN (:...ids)', { missingPairIds })
+        .where('price.pairId IN (:missingIds)', { missingIds : missingPairIds })
         .andWhere((qb) => {
             const subQuery = qb
                 .subQuery()
                 .select('price.id')
                 .from(PriceHistory, 'price')
-                .where('price.pairId IN (:...ids)', { missingPairIds })
+                .where('price.pairId IN (:subIds)', { subIds : missingPairIds })
                 .getQuery();
             return `price.id IN (${subQuery})`;
         })

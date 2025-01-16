@@ -15,7 +15,6 @@ export class EventService {
     const newEvent = this.eventRepository.create();
     //make sure that all previous event are inactive
     const activeEvent = await this.getActive();
-    console.log(activeEvent);
     if(activeEvent){
       throw new HttpException({ message: 'Previous event still active, please close it manually if you want to create a new one' }, HttpStatus.CONFLICT);
     }

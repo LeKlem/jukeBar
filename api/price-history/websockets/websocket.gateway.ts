@@ -3,18 +3,18 @@ import {
     WebSocketServer,
     OnGatewayConnection,
     OnGatewayDisconnect,
+    OnGatewayInit,
   } from '@nestjs/websockets';
   import { Server } from 'socket.io';
   
-  @WebSocketGateway({
-    cors: {
-      origin: '*', // Restrict this in production
-    },
-  })
-  export class PriceHistoryGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketGateway(5200, { cors: { origin: "*" } })
+  export class PriceHistoryGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
   
+    afterInit(server: Server) {
+      console.log('WebSocket server initialized and ready to accept connections');
+    }
     handleConnection(client: any) {
       console.log('Client connected:', client.id);
     }
@@ -24,7 +24,7 @@ import {
     }
   
     sendPriceUpdate(update: any) {
-      this.server.emit('price-update', update);
+      this.server.emit('price-updates', update);
     }
   }
   
