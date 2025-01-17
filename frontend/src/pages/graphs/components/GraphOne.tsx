@@ -27,18 +27,25 @@ ChartJS.register(
 import { io, Socket } from "socket.io-client";
 
 interface DrinkPairProps {
-  prices: PriceHistoryDTO[]
+  prices: PriceHistoryDTO[];
+  drinksName: {
+    pairId: number;
+    drinkOneName: string;
+    drinkTwoName: string;
+  }[];
 }
+type DrinksName = {
+  pairId: number;
+  drinkOneName: string;
+  drinkTwoName: string;
+};
 
 export default function GenerateGraphOne(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
-
+  const [drinksName, setDrinksNames] = useState<DrinksName[]>([]);
   useEffect(() => {
     const socket: Socket = io("http://localhost:5200");
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
-      console.log("received data");
-      console.log(newPrice);
-
       setPrices((prevPrices) => {
         const updatedPrices = [...prevPrices, newPrice];
         if (updatedPrices.length > 15) {
@@ -61,8 +68,9 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
 
   useEffect(() => {
     setPrices(props.prices || []);
-  }, [props.prices]);
+    setDrinksNames(props.drinksName || []);
 
+  }, [props.prices, props.drinksName]);
   const groupedPrices = prices.reduce((acc, price) => {
     const { pairId } = price;
     if (!acc[pairId]) {
@@ -72,22 +80,25 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
     return acc;
   }, {} as Record<number, PriceHistoryDTO[]>);
 
+  //get two arrays containing drinks name before going into next function
   const datasets = Object.entries(groupedPrices).flatMap(([pairId, pairPrices], index) => {
     const pairLabels = pairPrices.map((price) => price.time);
+    const drinkPair = drinksName.find(drink => drink.pairId == Number(pairId));
 
     const dataset1 = {
-      label: pairId,
+      label: drinkPair?.drinkOneName || `Drink 1 - Pair ${pairId}`,
       data: pairPrices.map((price) => price.price_drink_1),
       borderColor: `hsl(${pairsColors[index]}, 70%, 50%)`,
       labels: pairLabels,
     };
-
+    
     const dataset2 = {
-      label: pairId,
+      label: drinkPair?.drinkTwoName || `Drink 2 - Pair ${pairId}`,
       data: pairPrices.map((price) => price.price_drink_2),
       borderColor: `hsl(${pairsColors[index] + 30}, 70%, 50%)`,
       labels: pairLabels,
     };
+    
 
     return [dataset1, dataset2];
   });
@@ -103,7 +114,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
       ...dataset,
       data: uniqueLabels.map((label) => {
         const index = dataset.labels.indexOf(label);
-        return index !== -1 ? dataset.data[index] : null; // Preserve data alignment with labels
+        return index !== -1 ? dataset.data[index] : null;
       }),
     })),
   };

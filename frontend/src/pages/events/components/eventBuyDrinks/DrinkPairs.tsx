@@ -131,7 +131,7 @@ import {
 
     return (
       <Container>
-        <h2 className="text-center my-4 fw-bold text-uppercase">Drink Pair Form</h2>
+        <h2 className="text-center my-4 fw-bold text-uppercase"></h2>
         <Form className="d-flex flex-column gap-4">
           <div className="drink-pairs">
             {drinkInputs.map((drinkPair, index) => (

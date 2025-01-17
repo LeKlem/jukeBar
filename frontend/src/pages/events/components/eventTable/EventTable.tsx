@@ -1,9 +1,9 @@
 import { Button, Table } from "react-bootstrap";
 import { EventDTO } from "../../../../models/EventModels";
-import { CaretRightSquareFill, CupStraw, CurrencyDollar, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
+import { CaretRightSquareFill, CupStraw, CurrencyDollar, PlusSquare, XSquareFill, Trash3 } from 'react-bootstrap-icons';
 import './EventTable.scss'
 import { Link } from "react-router-dom";
-import { createEvent } from "../../../../webservices/EventWebService";
+import { createEvent, removeEvent } from "../../../../webservices/EventWebService";
 import { useEffect, useState } from "react";
 import { EVENT_TTL } from "../../../../const/const";
 
@@ -25,30 +25,42 @@ export default function EventTable(props: EventTableProps) {
             <tr key={index}>
                 <td>{event.id}</td>
                 <td>{ new Date(event.createdAt).toLocaleDateString() }</td>
-                <td className="text-center">{checkStatus(event)}</td>
+                <td className="text-center">{printStatus(isActive(event))}</td>
                 <td className="d-flex justify-content-center col">
-                    <Link to={`events/pair/${event.id}`} className="btn btn-outline-primary"><CupStraw/></Link>
+                    {isActive(event) ? <Link to={`events/pair/${event.id}`} className="btn btn-outline-primary"><CupStraw/></Link> : <Button className="d-flex btn-danger event-create gap-2 align-items-center" onClick={() => remove(event.id)}><Trash3/></Button>}
                     <p>&nbsp;</p>
-                    <Link to={`events/manage/${event.id}`} className="btn btn-outline-primary"><CurrencyDollar/></Link>
+                    {isActive(event) ? <Link to={`events/manage/${event.id}`} className="btn btn-outline-primary"><CurrencyDollar/></Link> : ""}
+
 
                 </td>
             </tr>
         ))
     }
 
-    const checkStatus = (event: EventDTO) => {
+    const printStatus = (isActive : boolean) => {
+        if(isActive)
+            return (<CaretRightSquareFill size={25} color="green"/>)
+        return (<XSquareFill size={25} color="red"/>)
+    }
+
+    const isActive = (event : EventDTO) =>{
         const eventDate = new Date(event.createdAt);
-        if(eventDate > new Date(Date.now() - EVENT_TTL) && event.active == true) {
-                return (<CaretRightSquareFill size={25} color="green"/>)
-        }else{
-                return (<XSquareFill size={25} color="red"/>)
-        }
+        if(eventDate > new Date(Date.now() - EVENT_TTL) && event.active == true)
+                return true
+        return false
     }
 
     const onCreateEvent = async () => {
         const createdEvent = await createEvent();
         setEvents([createdEvent, ...events])
     }
+
+    const remove = async (id : number) => {
+        removeEvent(id);
+
+        return "";
+    }
+
 
     return (
         <>

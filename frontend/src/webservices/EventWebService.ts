@@ -29,3 +29,6 @@ export const activateEvent = async (eventId: number) => {
 export const stopEvent = async (eventId: number) => {
     return (await axios.patch(`${url}/${eventId}/`, closeEvent, config)).data as EventDTO
 }
+export const removeEvent = async (eventId: number) => {
+    return (await axios.delete(`${url}/${eventId}/`, config)).data as EventDTO
+}

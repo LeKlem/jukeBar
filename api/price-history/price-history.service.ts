@@ -111,6 +111,12 @@ export class PriceHistoryService {
       } 
       const samePrice = this.priceRepository.create(saveSamePrice);
       this.priceRepository.save(samePrice);
+      this.priceHistoryGateway.sendPriceUpdate({
+        pairId: saveSamePrice.pairId,
+        price_drink_1: saveSamePrice.price_drink_1,
+        price_drink_2: saveSamePrice.price_drink_2,
+        timestamp: new Date().toISOString(),
+      });
     });
     }
     

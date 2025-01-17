@@ -4,14 +4,19 @@ import GenerateGraphOne from "../components/GraphOne.tsx";
 import { PriceHistoryDTO } from "../../../models/Price-history.ts";
 
 interface PricesLoaderData {
-    prices: PriceHistoryDTO[]
+    prices: PriceHistoryDTO[],
+    drinksNames:{
+        pairId : number,
+        drinkOneName: string,
+        drinkTwoName : string
+    }[],
 }
 
 export default function Graph() {
     const data = useLoaderData() as PricesLoaderData;
     return (
-    <>
-        <GenerateGraphOne prices={data.prices}/>
-    </>
+    <div className="graphOne">
+        <GenerateGraphOne prices={data.prices} drinksName={data.drinksNames}/>
+    </div>
     )
 }

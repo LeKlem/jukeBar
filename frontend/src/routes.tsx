@@ -7,8 +7,11 @@ import drinkLoader from "./pages/drinks/DrinkLoader";
 import EventDetails from "./pages/events/components/eventDetails/EventDetails";
 import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader";
 import BuyDrinks from "./pages/events/components/eventBuyDrinks/BuyDrinks";
-import { PricesLoader } from "./pages/graphs/components/PriceLoader";
+import { GraphOneLoader } from "./pages/graphs/components/GraphOneLoader.tsx"
+import { GraphTwoLoader } from "./pages/graphs/components/GraphTwoLoader.tsx"
+
 import Graph from "./pages/graphs/pages/Graphs.tsx";
+import GraphTwo from "./pages/graphs/pages/GraphTwo.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +52,12 @@ const router = createBrowserRouter([
   {
     path: 'graphs',
     element: <Graph  />,
-    loader : PricesLoader
+    loader : GraphOneLoader
+  },
+  {
+    path: 'graphTwo',
+    element: <GraphTwo  />,
+    loader : GraphTwoLoader
   }
 ]);
 
