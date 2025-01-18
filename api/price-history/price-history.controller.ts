@@ -13,9 +13,9 @@ export class PriceHistoryController {
   findMany(@Body() findManyPrices : findManyPrices ) {
     return this.priceHistoryService.findMany(findManyPrices, true);
   }
-  @Get('/getAll/')
-  getAll() {
-    return this.priceHistoryService.getAll();
+  @Get('/getAll/:lastPricesOnly')
+  getAll(@Param('lastPricesOnly') lastPricesOnly: boolean) {
+    return this.priceHistoryService.getAll(lastPricesOnly);
   }
 
   @Get()

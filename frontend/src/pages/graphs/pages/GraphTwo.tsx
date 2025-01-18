@@ -9,8 +9,8 @@ interface PricesLoaderData {
 export default function GraphTwo() {
     const data = useLoaderData() as PricesLoaderData;
     return (
-    <>
+    <div className="graphTwo">
         <GenerateGraphTwo prices={data.prices}/>
-    </>
+    </div>
     )
 }

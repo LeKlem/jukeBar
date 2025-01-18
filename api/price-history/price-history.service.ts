@@ -234,7 +234,7 @@ export class PriceHistoryService {
     return prices;
   }
 
-  async getAll(){
+  async getAll(lastPricesOnly : boolean){
     const currentEvent = await this.eventRepository.findOne({
       where: { 
         createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
@@ -250,6 +250,7 @@ export class PriceHistoryService {
     const obj = {
       ids : pairsID
     }
-    return await this.findMany(obj, false);
+    return await this.findMany(obj, lastPricesOnly);
   }
+  
 }

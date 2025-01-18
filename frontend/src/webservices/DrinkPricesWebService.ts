@@ -26,9 +26,9 @@ export const removeLastAction = async(pairId : number) => {
     return (await axios.delete(`${url}/${pairId}`, config)).data;
 }
 
-export const getAllForActiveEvent = async() => {    
+export const getAllForActiveEvent = async(lastPricesOnly : boolean) => {    
     try {
-        const response = await axios.get(`${url}/getAll/`, config);
+        const response = await axios.get(`${url}/getAll/${lastPricesOnly}`, config);
         return response.data;
     } catch (error : any) {
         if (error.response?.data?.message.includes("no active event")) {

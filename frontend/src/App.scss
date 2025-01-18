@@ -7,4 +7,22 @@
   width: 100%;
   height: 100%;
 }
+.graphTwo{
+  background: linear-gradient(to bottom, #01002a, #020fc6);
+  width: 100%;
+  height: 100%;
+}
+.price {
+  transition: transform 0.5s, color 0.5s;
+}
+
+.price.up {
+  transform: scale(1.5);
+  color: green;
+}
+
+.price.down {
+  transform: scale(1.5);
+  color: red;
+}
 
