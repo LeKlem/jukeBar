@@ -39,7 +39,6 @@ export class PriceHistoryService {
         { id, idEvent: { id: currentEvent.id } },
       ],
     });
-    console.log("pair id : " + id);
 
     const otherPairs = await this.pairRepository.find({
       where: [
@@ -90,7 +89,7 @@ export class PriceHistoryService {
       pairId: newPrice.pairId,
       price_drink_1: newPrice.price_drink_1,
       price_drink_2: newPrice.price_drink_2,
-      timestamp: new Date().toISOString(),
+      time: new Date().toISOString(),
     });
 
     //get all other active pairs from event, and save them again
@@ -98,14 +97,26 @@ export class PriceHistoryService {
     if(otherPairIds.length > 0 ){
       const prices = await this.priceRepository
       .createQueryBuilder('price')
-      .select('MAX(price.id), price_drink_1, price_drink_2')
-      .addSelect('price.pairId')
-      .where('price.pairId IN (:...otherPairIds)', { otherPairIds })
-      .groupBy('price.pairId')
+      .innerJoin(
+        (subQuery) =>
+          subQuery
+            .select('MAX(price.id)', 'maxId')
+            .addSelect('price.pairId', 'pairId')
+            .from('price_history', 'price')
+            .where('price.pairId IN (:...otherPairIds)', { otherPairIds })
+            .groupBy('price.pairId'),
+        'maxPrice',
+        'price.id = maxPrice.maxId'
+      )
+      .select('price.id', 'id')
+      .addSelect('price.pairId', 'pairId')
+      .addSelect('price.price_drink_1', 'price_drink_1')
+      .addSelect('price.price_drink_2', 'price_drink_2')
       .getRawMany();
+    
     prices.forEach((price) => {
       const saveSamePrice = {
-        pairId : price.price_pairId,
+        pairId : price.pairId,
         price_drink_1: price.price_drink_1,
         price_drink_2: price.price_drink_2,
       } 
@@ -115,7 +126,7 @@ export class PriceHistoryService {
         pairId: saveSamePrice.pairId,
         price_drink_1: saveSamePrice.price_drink_1,
         price_drink_2: saveSamePrice.price_drink_2,
-        timestamp: new Date().toISOString(),
+        time: new Date().toISOString(),
       });
     });
     }

@@ -33,9 +33,8 @@ export const getAllForActiveEvent = async() => {
     } catch (error : any) {
         if (error.response?.data?.message.includes("no active event")) {
             alert("No currently active event");
-            return [];
         }
-        throw error;
+        return [];
     }
     
 

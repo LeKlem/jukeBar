@@ -117,8 +117,11 @@ export class EventDrinksPairsService {
     });
   }
   findMany(ids: string) : Promise<EventDrinksPair[]> {
+    if(!ids){
+      throw new HttpException({ message: 'No pair selected.' }, HttpStatus.BAD_REQUEST);
+    }
     const pairIdsStr = ids.split(',');
-    const pairIds = pairIdsStr.map(pairId => Number(pairId)); 
+    const pairIds = pairIdsStr.map(pairId => Number(pairId));
     return this.pairsRepository.find({
       where : {id : In(pairIds)},
       relations: ['idEvent', 'idDrink_1', 'idDrink_2'],

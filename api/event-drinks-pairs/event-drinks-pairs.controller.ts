@@ -16,8 +16,8 @@ export class EventDrinksPairsController {
   findAll() {
     return this.eventDrinksPairsService.findAll();
   }
-  @Get('/findMany/:ids')
-  findMany(@Param('ids') ids : string) {
+  @Get('/findMany/:ids?')
+  findMany(@Param('ids') ids? : string) {
     return this.eventDrinksPairsService.findMany(ids);
   }
 
