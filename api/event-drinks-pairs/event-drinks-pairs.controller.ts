@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { EventDrinksPairsService } from './event-drinks-pairs.service';
 import { CreateEventDrinksPairDto } from './dto/create-event-drinks-pair.dto';
 import { UpdateEventDrinksPairDto } from './dto/update-event-drinks-pair.dto';
+import {Public} from "../users/decorators/public.decorator"
 
 @Controller('event-drinks-pairs')
 export class EventDrinksPairsController {
@@ -16,6 +17,7 @@ export class EventDrinksPairsController {
   findAll() {
     return this.eventDrinksPairsService.findAll();
   }
+  @Public()
   @Get('/findMany/:ids?')
   findMany(@Param('ids') ids? : string) {
     return this.eventDrinksPairsService.findMany(ids);

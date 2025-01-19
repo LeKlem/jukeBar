@@ -14,6 +14,7 @@
 }
 .price {
   transition: transform 0.5s, color 0.5s;
+  font-weight: bold;
 }
 
 .price.up {
@@ -26,3 +27,83 @@
   color: red;
 }
 
+.closed-svg{
+  animation: rotateBackAndForth 5s infinite ease-in-out;
+  height: 400px;
+  margin: auto;
+  width: 100%;
+  padding-top: 100px;
+}
+@keyframes rotateBackAndForth {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-40deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(40deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .unflexMobile{
+    display: block!important;
+  }
+  .removePair{
+    text-align: center;
+    margin-top: 15px;
+    Button{
+      width: 20%;
+    }
+  }
+  .mobile-spacer{
+    margin-top: 30px;
+  }
+}
+.gap2{
+  gap : .5rem;
+}
+.Dflex{
+  display: flex;
+}
+.g2-cell-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 45px;
+}
+.priceUp, .priceDown{
+  font-style: italic;
+}
+
+.tableCell{
+  padding: 12px;
+  text-align: center;
+  max-width: 1vw;
+  font-size: 16px;
+  border: 1px solid #dee2e6;
+}
+.g2table{
+  width: 60%;
+  border-collapse: collapse;
+  background-Color: rgb(52, 58, 64);
+  box-Shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: white
+}
+.g2header{
+  padding: 16px;
+    background-Color: #343a40;
+    color: #ffffff;
+    text-Align: center;
+    font-Size: 18px;
+    font-Weight: bold;
+    border: 1px solid #dee2e6;
+}

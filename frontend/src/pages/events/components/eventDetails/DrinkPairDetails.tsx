@@ -1,3 +1,4 @@
+import logo from '../../svg/closed.svg';
 export default function DrinkPairDetails() {
-    return (<p>DrinkPairDetails</p>)
+    return (<img className={"closed-svg"} src={logo} alt="Logo"  />)
 }

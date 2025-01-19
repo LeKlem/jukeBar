@@ -27,7 +27,9 @@ export default function EventTable(props: EventTableProps) {
                 <td>{ new Date(event.createdAt).toLocaleDateString() }</td>
                 <td className="text-center">{printStatus(isActive(event))}</td>
                 <td className="d-flex justify-content-center col">
-                    {isActive(event) ? <Link to={`events/pair/${event.id}`} className="btn btn-outline-primary"><CupStraw/></Link> : <Button className="d-flex btn-danger event-create gap-2 align-items-center" onClick={() => remove(event.id)}><Trash3/></Button>}
+                    {isActive(event) ? <Link to={`events/pair/${event.id}`} className="btn btn-outline-primary"><CupStraw/></Link> : ""
+                        //<Button className="d-flex btn-danger event-create gap-2 align-items-center" onClick={() => remove(event.id)}><Trash3/></Button>
+                    }
                     <p>&nbsp;</p>
                     {isActive(event) ? <Link to={`events/manage/${event.id}`} className="btn btn-outline-primary"><CurrencyDollar/></Link> : ""}
 

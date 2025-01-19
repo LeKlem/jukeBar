@@ -3,9 +3,9 @@ import { getMultiplePairs } from "../../../webservices/DrinkPairWebService";
 
 export async function GraphTwoLoader() {
     const prices = await getAllForActiveEvent(true);
-    const pairIds = prices.map((price: { pairId: number; }) => price.pairId);
+    const pairIds = prices.map((price: { pairId: number }) => price.pairId);
     const result = await getMultiplePairs(pairIds);
-    const drinksNames = result.map(res => ({
+    const drinks = result.map(res => ({
         pairId: res.id,
         drinkOneName: res.idDrink_1?.name || '',
         drinkTwoName: res.idDrink_2?.name || '',
@@ -14,5 +14,6 @@ export async function GraphTwoLoader() {
         drinkTwoInc : res.price_inc_2,
         drinkTwoDec : res.price_sub_2
     }));
-    return { prices, drinksNames };
+    console.log(drinks);
+    return { prices, drinks };
 }

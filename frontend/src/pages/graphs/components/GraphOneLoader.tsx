@@ -9,6 +9,7 @@ export async function GraphOneLoader() {
         pairId: res.id,
         drinkOneName: res.idDrink_1?.name || '',
         drinkTwoName: res.idDrink_2?.name || ''
+        
     }));
     return { prices, drinksNames };
 }

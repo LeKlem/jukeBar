@@ -4,7 +4,7 @@ import { io, Socket } from "socket.io-client";
 
 interface DrinkPairProps {
   prices: PriceHistoryDTO[];
-  drink:{
+  drinks:{
     pairId: number;
     drinkOneName: string;
     drinkTwoName: string;
@@ -12,7 +12,7 @@ interface DrinkPairProps {
     drinkOneDec : number;
     drinkTwoInc : number;
     drinkTwoDec : number;
-  }
+  }[]
 }
 type Drink = {
   pairId: number;
@@ -27,6 +27,7 @@ type Drink = {
 export default function GenerateGraphTwo(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
   const [priceChanges, setPriceChanges] = useState<Record<number, { drink1: string; drink2: string }>>({});
+  const [drinks, setDrinks] = useState<Drink[]>([]);
 
   useEffect(() => {
     const socket: Socket = io("http://localhost:5200");
@@ -80,31 +81,49 @@ export default function GenerateGraphTwo(props: DrinkPairProps) {
 
   useEffect(() => {
     setPrices(props.prices || []);
-  }, [props.prices]);
+    setDrinks(props.drinks || []);
+  }, [props.prices, props.drinks]);
+  console.log(props.drinks);
 
   return (
     <div style={styles.container}>
-      <table style={styles.table}>
+      <table className={"g2table"}>
         <thead>
           <tr>
-            <th colSpan={2} style={styles.header}>Paires de boissons</th>
+            <th colSpan={2} className={"g2header"}>Paires de boissons</th>
           </tr>
         </thead>
         <tbody>
-          {prices.map((price) => {
-            const changes = priceChanges[price.pairId] || { drink1: "", drink2: "" };
-            return (
-              <tr key={price.id}>
-                <td style={styles.cell}>
-                  <div className={`price ${changes.drink1}`}>{price.price_drink_1}€</div>
-                </td>
-                <td style={styles.cell}>
-                  <div className={`price ${changes.drink2}`}>{price.price_drink_2}€</div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+  {prices.map((price) => {
+    const changes = priceChanges[price.pairId] || { drink1: "", drink2: "" };
+    const drink = drinks.find((drink) => drink.pairId == price.pairId);
+    return (
+      <tr key={price.id}>
+        <td className={"tableCell"}>
+          <div className="g2-cell-content">
+            <div className="priceUp">+ {drink?.drinkOneInc}</div>
+            <div>
+              <div className="drinkName">{drink?.drinkOneName}</div>
+              <div className={`price ${changes.drink1}`}>{String(price.price_drink_1).length === 3 ? price.price_drink_1 + "0" : price.price_drink_1}€</div>
+            </div>
+            <div className="priceDown">- {drink?.drinkOneDec}</div>
+          </div>
+        </td>
+        <td className={"tableCell"}>
+          <div className="g2-cell-content">
+            <div className="priceUp">+ {drink?.drinkTwoInc}</div>
+            <div>
+              <div className="drinkName">{drink?.drinkTwoName}</div>
+              <div className={`price ${changes.drink2}`}>{String(price.price_drink_2).length === 3 ? price.price_drink_2 + "0" : price.price_drink_2}€</div>
+            </div>
+            <div className="priceDown">- {drink?.drinkTwoDec}</div>
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
       </table>
     </div>
   );
@@ -117,27 +136,5 @@ const styles = {
     alignItems: "center",
     height: "100vh",
     width: "100vw",
-  },
-  table: {
-    width: "80%",
-    borderCollapse: "collapse",
-    backgroundColor: "rgb(52, 58, 64)",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    color: "white",
-  },
-  header: {
-    padding: "16px",
-    backgroundColor: "#343a40",
-    color: "#ffffff",
-    textAlign: "center",
-    fontSize: "18px",
-    fontWeight: "bold",
-    border: "1px solid #dee2e6",
-  },
-  cell: {
-    padding: "12px",
-    textAlign: "center",
-    fontSize: "16px",
-    border: "1px solid #dee2e6",
   },
 };

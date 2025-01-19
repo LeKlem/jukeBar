@@ -66,6 +66,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
             }
             await createDrinkPair(newPair)
         })
+        console.log("Modifications enregistrées");
     }
 
     const getAvailableDrinks = (index: number, field: 'idDrink_1' | 'idDrink_2'): DrinkDTO[] => {
@@ -165,9 +166,12 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                     {drinkInputs.map((drinkPair, index) => (
                         <div className="drink-pair border rounded px-3 py-3" key={index}>
                             <FormLabel>Paire de boisson n°{index + 1}</FormLabel>
-                            <div className="d-flex gap-2">
+                            <div className="Dflex gap2 unflexMobile">
                                 {displayFields(drinkPair, index, 'idDrink_1')}
+                                <div className="mobile-spacer"></div>
                                 {displayFields(drinkPair, index, 'idDrink_2')}
+                            </div>
+                            <div className="removePair">
                                 <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
                             </div>
                         </div>

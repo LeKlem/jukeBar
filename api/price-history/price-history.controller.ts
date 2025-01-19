@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PriceHistoryService } from './price-history.service';
 import { findManyPrices } from './dto/find-many-prices.dto';
+import {Public} from "../users/decorators/public.decorator"
+
 @Controller('price-history')
 export class PriceHistoryController {
   constructor(private readonly priceHistoryService: PriceHistoryService) {}
@@ -13,6 +15,7 @@ export class PriceHistoryController {
   findMany(@Body() findManyPrices : findManyPrices ) {
     return this.priceHistoryService.findMany(findManyPrices, true);
   }
+  @Public()
   @Get('/getAll/:lastPricesOnly')
   getAll(@Param('lastPricesOnly') lastPricesOnly: boolean) {
     return this.priceHistoryService.getAll(lastPricesOnly);

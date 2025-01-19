@@ -140,13 +140,13 @@ import {
                   <Card.Title className="text-center">
                     Drink Pair #{index + 1}
                   </Card.Title>
-                  <Button
+                  {/* <Button
                     onClick={() => cancelAction(drinkPair?.id || 0)}
                     variant="danger"
                     size="sm"
                     >
-                <BagPlus className="me-1" /> Annuler
-              </Button>
+                    <BagPlus className="me-1" /> Annuler
+                  </Button> */}
                   <Row className="mt-3">
                     {displayFields(drinkPair, "idDrink_1")}
                     {displayFields(drinkPair, "idDrink_2")}
