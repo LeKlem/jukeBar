@@ -35,6 +35,11 @@ export class UsersController {
   async remove(@Param() id: UUID) {
     return this.usersService.remove(id.id);
   }
+  @Public()
+  @Get("/isValid/:token")
+  async isValid(@Param("token") token : string) {
+    return this.usersService.isValid(token);
+  }
 }
 
 @Controller('admin')

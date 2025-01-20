@@ -18,6 +18,8 @@ export default function EventTable(props: EventTableProps) {
     useEffect(() => {
         setEvents(props.events);
     }, [props.events])
+    if(!localStorage.getItem("Bearer")){
+    }
 
     const displayEvents = (events: EventDTO[]) => {
         (events);
@@ -67,7 +69,7 @@ export default function EventTable(props: EventTableProps) {
     return (
         <>
             <div className="title d-flex justify-content-between">
-                <h2>Evènements</h2>
+                <h2>Evénements</h2>
                 <Button className="d-flex event-create gap-2 align-items-center" onClick={onCreateEvent}>
                     Créer
                     <PlusSquare/>

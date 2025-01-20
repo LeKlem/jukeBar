@@ -28,23 +28,31 @@ ChartJS.register(
 
 interface DrinkPairProps {
   prices: PriceHistoryDTO[];
-  drinksName: {
+  drinks:{
     pairId: number;
     drinkOneName: string;
     drinkTwoName: string;
-  }[];
+    drinkOneInc : number;
+    drinkOneDec : number;
+    drinkTwoInc : number;
+    drinkTwoDec : number;
+  }[]
 }
-
-type DrinksName = {
+type drinks = {
   pairId: number;
   drinkOneName: string;
   drinkTwoName: string;
+  drinkOneInc : number;
+  drinkOneDec : number;
+  drinkTwoInc : number;
+  drinkTwoDec : number;
 };
+
 
 export default function GenerateGraphOne(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
-  const [drinksName, setDrinksNames] = useState<DrinksName[]>([]);
+  const [drinks, setdrinkss] = useState<drinks[]>([]);
   const [existingLabels, setExistingLabels] = useState<string[]>([]);
 
   useEffect(() => {
@@ -52,7 +60,6 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
 
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
       setPrices((prevPrices) => {
-        console.log(newPrice)
         const updatedPrices = [...prevPrices, newPrice];
         //replace with code to remove first data after a certain quantity
         // if (updatedPrices.length > 100) {
@@ -72,13 +79,10 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
         if(existingLabels.indexOf(String(newDate)) === -1){
           const updatedLabel = [...prevLabels, newLabel];
           existingLabels.push(String(newDate));
-          // if (updatedLabel.length > 100) {
-          //   updatedLabel.shift();
-          // }
+
           return updatedLabel;
         }
         return prevLabels;
-
       });
       
     });
@@ -98,9 +102,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
 
   useEffect(() => {
     setPrices(props.prices || []);
-    setDrinksNames(props.drinksName || []);
-
-    console.log(props.prices.length);
+    setdrinkss(props.drinks || []);
     const groupedLabels = (props.prices || []).filter(function(price){
       if(existingLabels.indexOf(String(price.time)) === -1){
         existingLabels.push(String(price.time));
@@ -108,7 +110,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
       }
       return false;
     });
-    console.log(groupedLabels.length);
+    console.log(props.drinks, drinks);
 
     const initialLabels = (groupedLabels).map((price) => {
       const date = new Date(price.time);
@@ -120,7 +122,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
     });
 
     setLabels(initialLabels);
-  }, [props.prices, props.drinksName]);
+  }, [props.prices, props.drinks]);
 
   const groupedPrices = prices.reduce((acc, price) => {
     const { pairId } = price;
@@ -132,7 +134,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
   }, {} as Record<number, PriceHistoryDTO[]>);
 
   const datasets = Object.entries(groupedPrices).flatMap(([pairId, pairPrices], index) => {
-    const drinkPair = drinksName.find((drink) => drink.pairId == Number(pairId));
+    const drinkPair = drinks.find((drink) => drink.pairId == Number(pairId));
 
     const dataset1 = {
       label: drinkPair?.drinkOneName || `Drink 1 - Pair ${pairId}`,

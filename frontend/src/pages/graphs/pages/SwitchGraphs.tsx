@@ -1,9 +1,11 @@
 import { useLoaderData } from "react-router-dom";
 import { PriceHistoryDTO } from "../../../models/Price-history.ts";
-import GenerateGraphTwo from "../components/GraphTwo.tsx";
+import GenerateGraphs from "../components/Graphs.tsx";
+
 
 interface PricesLoaderData {
     maxPrices: PriceHistoryDTO[]
+    prices: PriceHistoryDTO[]
     drinks :{
         pairId: number;
         drinkOneName: string;
@@ -15,11 +17,13 @@ interface PricesLoaderData {
     }[]
 }
 
-export default function GraphTwo() {
+export default function SwithGraphs() {
     const data = useLoaderData() as PricesLoaderData;
     return (
-    <div className="graphTwo">
-        <GenerateGraphTwo prices={data.maxPrices} drinks={data.drinks}/>
-    </div>
+        <div className="graphOne graphTwo">
+            <GenerateGraphs prices={data.prices} drinks={data.drinks} maxPrices={data.maxPrices}/>
+        </div>
     )
+    
+    
 }

@@ -1,8 +1,9 @@
-import { getAllForActiveEvent } from "../../../webservices/DrinkPricesWebService";
 import { getMultiplePairs } from "../../../webservices/DrinkPairWebService";
+import { getAllForActiveEvent } from "../../../webservices/DrinkPricesWebService";
+export async function GraphsLoader() {
+    const maxPrices = await getAllForActiveEvent(true);//To do : get Max prices from prices programatically
+    const prices = await getAllForActiveEvent(false);
 
-export async function GraphTwoLoader() {
-    const prices = await getAllForActiveEvent(true);
     const pairIds = prices.map((price: { pairId: number }) => price.pairId);
     const result = await getMultiplePairs(pairIds);
     const drinks = result.map(res => ({
@@ -14,6 +15,5 @@ export async function GraphTwoLoader() {
         drinkTwoInc : res.price_inc_2,
         drinkTwoDec : res.price_sub_2
     }));
-    console.log(drinks);
-    return { prices, drinks };
+    return { maxPrices, prices, drinks };
 }

@@ -6,13 +6,17 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LoginAuthDto } from './dto/auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
+
 const jwt = require('jsonwebtoken');
 
 @Injectable()
-export class UsersService {
+export class UsersService {  
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService
   ) { }
 
   async login(loginData: LoginAuthDto) {
@@ -30,7 +34,7 @@ export class UsersService {
     };
   
     // Generate JWT token
-    const token = jwt.sign(tokenData, "secret", { expiresIn: '1h' });
+    const token = jwt.sign(tokenData, jwtConstants.secret, { expiresIn: '15h' });
   
     return { token }; // Return the token
   }
@@ -97,5 +101,21 @@ export class UsersService {
       throw new HttpException({ message: 'User not found.' }, HttpStatus.NOT_FOUND);
     else
       return await this.usersRepository.delete({ id });
+  }
+
+  async isValid(token : string){
+    try{
+      const res =  await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      if(res.id !== undefined){
+        return true;
+      }
+      return false;
+    }catch{
+      return false;
+    }
+    
+    return 
   }
 }

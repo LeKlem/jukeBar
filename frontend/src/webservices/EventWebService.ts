@@ -1,6 +1,5 @@
 import axios from "axios";
 import { EventDTO } from "../models/EventModels";
-
 const url = import.meta.env.VITE_API_STRING + 'event';
 const config = {
     headers: {
@@ -11,12 +10,39 @@ const config = {
 const closeEvent={
     closeEvent : true
 }
-export const getOneEvent = async (eventId: number): Promise<EventDTO> => {
-    return (await axios.get(`${url}/${eventId}`, config)).data as EventDTO;
+export const getOneEvent = async (eventId: number): Promise<EventDTO>=> {
+    try {
+        const response = await axios.get(`${url}/${eventId}`, config);
+        return response.data;
+    } catch (error : any) {
+        if (error.response.status === 401) {
+            const emptyEvent = {
+                id : 0,
+                createdAt : new Date(0),
+                active:false
+            }
+            return emptyEvent;
+        }
+        else{
+            throw error;
+        }
+        
+    }
 }
 
 export const getEvents = async (): Promise<EventDTO[]> => {
-    return (await axios.get(url, config)).data as EventDTO[];
+    try {
+        const response = await axios.get(url, config);
+        return response.data;
+    } catch (error : any) {
+        if (error.response.status === 401) {
+            throw new Error("Unauthorized");
+        }
+        else{
+            throw error;
+        }
+        
+    }
 }
 export const createEvent = async (): Promise<EventDTO> => {
     return (await axios.post(url,{},config)).data as EventDTO;

@@ -1,6 +1,6 @@
 export const WEBSOCKET_CONFIG = {
-    // cors: {
-    //     origin: '*',
-    // },
+    cors: {
+        origin: '*',
+    },
     namespace: '/price-updates',
 };
