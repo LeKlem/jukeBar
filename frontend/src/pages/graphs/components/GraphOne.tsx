@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { io, Socket } from "socket.io-client";
 import {
@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { GraphOneOptions, pairsColors } from "./GraphOneOptions";
 import { PriceHistoryDTO } from "../../../models/Price-history";
+import { NUMBER_OF_DATAPOINTS_TO_KEEP } from "../../../const/const";
 
 ChartJS.register(
   CategoryScale,
@@ -54,17 +55,27 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
   const [labels, setLabels] = useState<string[]>([]);
   const [drinks, setdrinkss] = useState<drinks[]>([]);
   const [existingLabels, setExistingLabels] = useState<string[]>([]);
+  const numberOfDrinks = useRef<number>(0);
+  const shiftLabels = useRef<boolean>(false);
+
+  useEffect(() => {
+    numberOfDrinks.current = props.drinks.length;
+  }, [props.drinks]);
 
   useEffect(() => {
     const socket: Socket = io("http://localhost:5200");
-
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
       setPrices((prevPrices) => {
         const updatedPrices = [...prevPrices, newPrice];
-        //replace with code to remove first data after a certain quantity
-        // if (updatedPrices.length > 100) {
-        //   updatedPrices.shift();
-        // }
+        // replace with code to remove first data after a certain quantity
+        console.log(updatedPrices.length + "   " + NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current);
+        if (updatedPrices.length > NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current) {
+          console.log("price shift");
+          for(let i = 0;i++;i < NUMBER_OF_DATAPOINTS_TO_KEEP){
+              updatedPrices.shift();
+          }
+          shiftLabels.current = true;
+        }
         
         return updatedPrices;
       });
@@ -79,7 +90,11 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
         if(existingLabels.indexOf(String(newDate)) === -1){
           const updatedLabel = [...prevLabels, newLabel];
           existingLabels.push(String(newDate));
-
+          if(shiftLabels.current === true){
+            shiftLabels.current = false;
+            console.log("shift labels");
+            updatedLabel.shift();
+          }
           return updatedLabel;
         }
         return prevLabels;

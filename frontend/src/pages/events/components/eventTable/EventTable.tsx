@@ -18,9 +18,6 @@ export default function EventTable(props: EventTableProps) {
     useEffect(() => {
         setEvents(props.events);
     }, [props.events])
-    if(!localStorage.getItem("Bearer")){
-    }
-
     const displayEvents = (events: EventDTO[]) => {
         (events);
         return events.map((event, index) => (

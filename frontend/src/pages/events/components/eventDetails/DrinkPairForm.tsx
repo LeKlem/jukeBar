@@ -170,9 +170,9 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                                 {displayFields(drinkPair, index, 'idDrink_1')}
                                 <div className="mobile-spacer"></div>
                                 {displayFields(drinkPair, index, 'idDrink_2')}
-                            </div>
-                            <div className="removePair">
-                                <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
+                                <div className="removePair ">
+                                    <Button className="fullHeight" onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
+                                </div>
                             </div>
                         </div>
                     ))}

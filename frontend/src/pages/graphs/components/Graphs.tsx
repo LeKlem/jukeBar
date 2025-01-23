@@ -172,7 +172,7 @@ export default function GenerateGraphs(props: DrinkPairProps) {
 
     return () => clearInterval(interval); // Clean up interval on component unmount
   }, []);
-  return false ? (
+  return showTable ? (
     <div style={styles.container}>
       <table className={"g2table"}>
         <thead>
