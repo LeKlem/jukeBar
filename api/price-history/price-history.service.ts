@@ -22,7 +22,7 @@ export class PriceHistoryService {
     private eventsDrinksPairService : EventDrinksPairsService,
   ) {}
 
-  async buy(id : number, @Body() body: any) {// TO DO : Improve to add data points witout changing data in non affected pairs 
+  async buy(id : number, @Body() body: any) {// TO DO : Edit to save data in the order of the smallest to the biggest id
     const currentEvent = await this.eventRepository.findOne({
       where: { 
         createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
@@ -113,15 +113,16 @@ export class PriceHistoryService {
       .addSelect('price.price_drink_1', 'price_drink_1')
       .addSelect('price.price_drink_2', 'price_drink_2')
       .getRawMany();
-    
-    prices.forEach((price) => {
+      type PriceHistoryWithId = PriceHistory & { number: number };
+      var toSave: PriceHistoryWithId[] = [];
+      prices.forEach((price) => {
       const saveSamePrice = {
         pairId : price.pairId,
         price_drink_1: price.price_drink_1,
         price_drink_2: price.price_drink_2,
       } 
       const samePrice = this.priceRepository.create(saveSamePrice);
-      this.priceRepository.save(samePrice);
+      toSave.push({...samePrice, number : price.pairId});
       this.priceHistoryGateway.sendPriceUpdate({
         pairId: saveSamePrice.pairId,
         price_drink_1: saveSamePrice.price_drink_1,
@@ -130,8 +131,23 @@ export class PriceHistoryService {
       });
     });
     }
-    
-    return await this.priceRepository.save(newPrice);
+    var isSaved : boolean = false;
+    var res;
+    toSave.sort((a, b) => a.number - b.number); 
+    toSave.forEach(async priceToSave => {
+      if(id === priceToSave.number - 1 && !isSaved){
+        res = this.priceRepository.save(newPrice);
+        isSaved = true;
+      }
+      
+      this.priceRepository.save(priceToSave);
+      if(id === priceToSave.number + 1 && !isSaved){
+        res = this.priceRepository.save(newPrice);
+        isSaved = true;
+      }
+
+    });
+    return res;
   }
 
   findAll() {
@@ -208,9 +224,8 @@ export class PriceHistoryService {
     return `price.id IN (${subQuery})`;
   })
   .orderBy('price.id', 'DESC')
-  .limit(15)
+  .limit(10 * ids.length)
   .getMany();
-
     const foundPairIds = new Set(prices.map((price) => price.pairId));
     const missingPairIds = ids.filter((id) => !foundPairIds.has(id));
     if (missingPairIds.length > 0) {
@@ -230,10 +245,16 @@ export class PriceHistoryService {
         .getMany();
         prices.push(...newPrices);
     }
-
+    prices.sort(this.compare);
     return prices;
   }
 
+  compare(a : PriceHistory, b : PriceHistory){
+    if(a.id > b.id){
+      return 1;
+    }
+    return -1;
+  }
   async getAll(lastPricesOnly : boolean){
     const currentEvent = await this.eventRepository.findOne({
       where: { 

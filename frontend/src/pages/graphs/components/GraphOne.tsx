@@ -57,6 +57,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
   const [existingLabels, setExistingLabels] = useState<string[]>([]);
   const numberOfDrinks = useRef<number>(0);
   const shiftLabels = useRef<boolean>(false);
+  // const [updatedGraph, setUpdatedGraph] = useState<number>(0);
 
   useEffect(() => {
     numberOfDrinks.current = props.drinks.length;
@@ -66,13 +67,13 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
     const socket: Socket = io("http://localhost:5200");
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
       setPrices((prevPrices) => {
+        console.log(prevPrices);
         const updatedPrices = [...prevPrices, newPrice];
+        console.log(updatedPrices);
         // replace with code to remove first data after a certain quantity
-        console.log(updatedPrices.length + "   " + NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current);
         if (updatedPrices.length > NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current) {
-          console.log("price shift");
           for(let i = 0;i++;i < NUMBER_OF_DATAPOINTS_TO_KEEP){
-              updatedPrices.shift();
+            updatedPrices.shift();
           }
           shiftLabels.current = true;
         }
@@ -92,8 +93,8 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
           existingLabels.push(String(newDate));
           if(shiftLabels.current === true){
             shiftLabels.current = false;
-            console.log("shift labels");
             updatedLabel.shift();
+          //   // setUpdatedGraph(updatedGraph + 0);
           }
           return updatedLabel;
         }
@@ -168,6 +169,6 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
     labels,
     datasets,
   };
-
+  console.log(prices.length + " "  + labels.length);
   return <Line options={GraphOneOptions} data={data} />;
 }

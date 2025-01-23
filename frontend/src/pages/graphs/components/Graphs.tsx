@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { io, Socket } from "socket.io-client";
 import {
@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { GraphOneOptions, pairsColors } from "./GraphOneOptions";
 import { PriceHistoryDTO } from "../../../models/Price-history";
+import { NUMBER_OF_DATAPOINTS_TO_KEEP } from "../../../const/const";
 
 ChartJS.register(
   CategoryScale,
@@ -58,13 +59,29 @@ export default function GenerateGraphs(props: DrinkPairProps) {
   const [drinks, setDrinks] = useState<Drinks[]>([]);
   const [existingLabels, setExistingLabels] = useState<string[]>([]);
   const [showTable, setShowTable] = useState(true);
+  const numberOfDrinks = useRef<number>(0);
+  const shiftLabels = useRef<boolean>(false);
+  
+  useEffect(() => {
+    numberOfDrinks.current = props.drinks.length;
+  }, [props.drinks]);
 
   useEffect(() => {
     const socket: Socket = io("http://localhost:5200");
 
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
-      setPrices((prevPrices) => [...prevPrices, newPrice]);
-      setMaxPrices((prevPrices) => {
+    setPrices((prevPrices) => {
+        const updatedPrices = [...prevPrices, newPrice];
+        // replace with code to remove first data after a certain quantity
+        if (updatedPrices.length > NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current) {
+          for(let i = 0;i++;i < NUMBER_OF_DATAPOINTS_TO_KEEP){
+              updatedPrices.shift();
+          }
+          shiftLabels.current = true;
+        }
+        
+        return updatedPrices;
+      });      setMaxPrices((prevPrices) => {
         const updatedPrices = prevPrices.map((price) => {
           if (price.pairId === newPrice.pairId) {
             const drink1Change = newPrice.price_drink_1 > price.price_drink_1 ? "up" : newPrice.price_drink_1 < price.price_drink_1 ? "down" : "";
@@ -96,7 +113,10 @@ export default function GenerateGraphs(props: DrinkPairProps) {
         if(existingLabels.indexOf(String(newDate)) === -1){
           const updatedLabel = [...prevLabels, newLabel];
           existingLabels.push(String(newDate));
-
+          if(shiftLabels.current === true){
+            shiftLabels.current = false;
+            updatedLabel.shift();
+          }
           return updatedLabel;
         }
         return prevLabels;
@@ -133,7 +153,6 @@ export default function GenerateGraphs(props: DrinkPairProps) {
       }
       return `${date.getHours()}:${minutes}`;
     });
-    // console.log(initialLabels);
     setLabels(initialLabels);
     
   }, [props.prices, props.drinks]);
