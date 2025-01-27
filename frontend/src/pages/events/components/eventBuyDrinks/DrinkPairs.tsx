@@ -14,7 +14,7 @@ import {
     CupStraw,
     BagPlus,
   } from "react-bootstrap-icons";
-  import { useState, useEffect } from "react";
+  import { useState, useEffect, useRef } from "react";
   import { DrinkDTO } from "../../../../models/DrinkModels";
   import { DrinkPairDTO } from "../../../../models/DrinkPairModels";
   import { getDrinksPrices, buyDrink, removeLastAction } from "../../../../webservices/DrinkPricesWebService";
@@ -36,6 +36,7 @@ import {
     const [drinks, setDrinks] = useState<DrinkDTO[]>([]);
     const [drinkPrices, setDrinkPrices] = useState<DrinkPrices[] | null>(null);
     const [nbOfDrinksSold, setNbOfDrinksSold] = useState(0);
+    const lastExecutionRef = useRef<number>(0);
   
     useEffect(() => {
       setDrinks(props.drinks);
@@ -58,10 +59,29 @@ import {
     }, [props.drinkPairs, nbOfDrinksSold]);
   
     const BuyADrink = async (id: number, isDrinkOne: boolean) => {
-      await buyDrink(id, isDrinkOne);
-      setNbOfDrinksSold(nbOfDrinksSold + 1);
+      const now = Date.now();
+    
+      if (now - lastExecutionRef.current >= 500) {
+        // Proceed with the action if the last execution was more than 500ms ago
+        lastExecutionRef.current = now;
+        console.log("Executing immediately");
+        await buyDrink(id, isDrinkOne);
+        setNbOfDrinksSold((prev) => prev + 1);
+        console.log("sending at " +  lastExecutionRef.current);
+      } else {
+        // Calculate the remaining delay and ensure the next action is queued properly
+        const remainingDelay = 800 - (now - lastExecutionRef.current);
+        console.log(`Delaying for ${remainingDelay}ms`);
+        setTimeout(async () => {
+          lastExecutionRef.current = Date.now();
+          console.log("sending at " +  lastExecutionRef.current);
+          await buyDrink(id, isDrinkOne);
+          setNbOfDrinksSold((prev) => prev + 1);
+        }, remainingDelay);
+      }
     };
-  
+    
+    
     const displayFields = (
       drinkPair: DrinkPairDTO,
       field: "idDrink_1" | "idDrink_2"

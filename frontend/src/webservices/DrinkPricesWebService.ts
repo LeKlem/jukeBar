@@ -32,7 +32,7 @@ export const getAllForActiveEvent = async(lastPricesOnly : boolean) => {
         return response.data;
     } catch (error : any) {
         if (error.response?.data?.message.includes("no active event")) {
-            alert("No currently active event");
+            console.log("No currently active event");
         }
         return [];
     }

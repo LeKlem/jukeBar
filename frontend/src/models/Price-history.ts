@@ -3,5 +3,5 @@ export interface PriceHistoryDTO {
     pairId : number,
     price_drink_1 : number,
     price_drink_2 : number,
-    time: Date
+    time: Date,
 }

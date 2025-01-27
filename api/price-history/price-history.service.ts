@@ -22,7 +22,7 @@ export class PriceHistoryService {
     private eventsDrinksPairService : EventDrinksPairsService,
   ) {}
 
-  async buy(id : number, @Body() body: any) {// TO DO : Edit to save data in the order of the smallest to the biggest id
+  async buy(id : number, @Body() body: any) {
     const currentEvent = await this.eventRepository.findOne({
       where: { 
         createdAt: MoreThan(new Date(Date.now() - EVENT_TTL)),
@@ -63,11 +63,16 @@ export class PriceHistoryService {
         order: { id: 'DESC' },
       });
     }
+
+    const time : string =  new Date().toISOString();
     let newPriceData = {
       pairId: oldPrice.pairId,
       price_drink_1: oldPrice.price_drink_1,
       price_drink_2: oldPrice.price_drink_2,
+      time : time
     };
+
+
     if (body.isDrinkOne) {
       newPriceData.price_drink_1 = Number(newPriceData.price_drink_1) + Number(pairId.price_inc_1);
       if(pairId.min_price_2 < Number(newPriceData.price_drink_2) - Number(pairId.price_sub_2)){
@@ -89,7 +94,7 @@ export class PriceHistoryService {
       pairId: newPrice.pairId,
       price_drink_1: newPrice.price_drink_1,
       price_drink_2: newPrice.price_drink_2,
-      time: new Date().toISOString(),
+      time: time,
     });
 
     //get all other active pairs from event, and save them again
@@ -120,6 +125,7 @@ export class PriceHistoryService {
         pairId : price.pairId,
         price_drink_1: price.price_drink_1,
         price_drink_2: price.price_drink_2,
+        time : time
       } 
       const samePrice = this.priceRepository.create(saveSamePrice);
       toSave.push({...samePrice, number : price.pairId});
@@ -127,7 +133,7 @@ export class PriceHistoryService {
         pairId: saveSamePrice.pairId,
         price_drink_1: saveSamePrice.price_drink_1,
         price_drink_2: saveSamePrice.price_drink_2,
-        time: new Date().toISOString(),
+        time: time,
       });
     });
     }
@@ -211,21 +217,21 @@ export class PriceHistoryService {
     }
   
     const prices = await this.priceRepository
-  .createQueryBuilder('price')
-  .where('price.pairId IN (:...ids)', { ids })
-  .andWhere((qb) => {
-    const subQuery = qb
-      .subQuery()
-      .select(selectPrice)
-      .from(PriceHistory, 'price')
-      .where('price.pairId IN (:subIds)', { subIds: ids })
-      .groupBy('price.pairId')
-      .getQuery();
-    return `price.id IN (${subQuery})`;
-  })
-  .orderBy('price.id', 'DESC')
-  .limit(10 * ids.length)
-  .getMany();
+      .createQueryBuilder('price')
+      .where('price.pairId IN (:...ids)', { ids })
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select(selectPrice)
+          .from(PriceHistory, 'price')
+          .where('price.pairId IN (:subIds)', { subIds: ids })
+          .groupBy('price.pairId')
+          .getQuery();
+        return `price.id IN (${subQuery})`;
+      })
+      .orderBy('price.id', 'DESC')
+      .limit(20 * ids.length)
+      .getMany();
     const foundPairIds = new Set(prices.map((price) => price.pairId));
     const missingPairIds = ids.filter((id) => !foundPairIds.has(id));
     if (missingPairIds.length > 0) {

@@ -53,11 +53,10 @@ type drinks = {
 export default function GenerateGraphOne(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
-  const [drinks, setdrinkss] = useState<drinks[]>([]);
+  const [drinks, setdrinks] = useState<drinks[]>([]);
   const [existingLabels, setExistingLabels] = useState<string[]>([]);
   const numberOfDrinks = useRef<number>(0);
   const shiftLabels = useRef<boolean>(false);
-  // const [updatedGraph, setUpdatedGraph] = useState<number>(0);
 
   useEffect(() => {
     numberOfDrinks.current = props.drinks.length;
@@ -70,7 +69,6 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
         console.log(prevPrices);
         const updatedPrices = [...prevPrices, newPrice];
         console.log(updatedPrices);
-        // replace with code to remove first data after a certain quantity
         if (updatedPrices.length > NUMBER_OF_DATAPOINTS_TO_KEEP * numberOfDrinks.current) {
           for(let i = 0;i++;i < NUMBER_OF_DATAPOINTS_TO_KEEP){
             updatedPrices.shift();
@@ -118,7 +116,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
 
   useEffect(() => {
     setPrices(props.prices || []);
-    setdrinkss(props.drinks || []);
+    setdrinks(props.drinks || []);
     const groupedLabels = (props.prices || []).filter(function(price){
       if(existingLabels.indexOf(String(price.time)) === -1){
         existingLabels.push(String(price.time));
@@ -169,6 +167,5 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
     labels,
     datasets,
   };
-  console.log(prices.length + " "  + labels.length);
   return <Line options={GraphOneOptions} data={data} />;
 }
