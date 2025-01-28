@@ -46,20 +46,27 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                 idEvent: props.eventId,
                 idDrink_1: drinkPair.idDrink_1?.id!,
                 idDrink_2: drinkPair.idDrink_2?.id!,
-                price_inc_1: drinkPair.price_inc_1 * 100,
-                price_inc_2: drinkPair.price_inc_2 * 100,
-                price_sub_1: drinkPair.price_sub_1 * 100,
-                price_sub_2: drinkPair.price_sub_2 * 100,
-                min_price_1: drinkPair.min_price_1 * 100,
-                min_price_2: drinkPair.min_price_2 * 100
+                price_inc_1: drinkPair.price_inc_1,
+                price_inc_2: drinkPair.price_inc_2,
+                price_sub_1: drinkPair.price_sub_1,
+                price_sub_2: drinkPair.price_sub_2,
+                min_price_1: drinkPair.min_price_1,
+                min_price_2: drinkPair.min_price_2,
             }
 
             if (drinkPair.id) {
+                newPair.min_price_1 *= 100;
+                newPair.min_price_2 *= 100;
+                newPair.price_inc_1 *= 100;
+                newPair.price_inc_2 *= 100;
+                newPair.price_sub_1 *= 100;
+                newPair.price_sub_2 *= 100;
                 await updateEventPair(drinkPair.id, newPair);
                 return
             }
             await createDrinkPair(newPair)
         })
+        console.log("Modifications enregistrées");
     }
 
     const getAvailableDrinks = (index: number, field: 'idDrink_1' | 'idDrink_2'): DrinkDTO[] => {
@@ -120,7 +127,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_inc_1' : 'price_inc_2', parseFloat(e.target.value))}
                             step={0.1}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.price_inc_1 : drinkPair.price_inc_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_inc_1 * 100 : drinkPair.price_inc_2 * 100}
                         />
                     </FormGroup>
                     <FormGroup className="col">
@@ -130,7 +137,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'price_sub_1' : 'price_sub_2', parseFloat(e.target.value))}
                             step={0.1}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.price_sub_1 : drinkPair.price_sub_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.price_sub_1 * 100: drinkPair.price_sub_2 * 100}
                         />
                     </FormGroup>
                     <FormGroup className="col">
@@ -140,7 +147,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                             onChange={(e) => onDrinkPriceChange(index, field == 'idDrink_1' ? 'min_price_1' : 'min_price_2', parseFloat(e.target.value))}
                             step={0.5}
                             min={0}
-                            defaultValue={field == 'idDrink_1' ? drinkPair.min_price_1 : drinkPair.min_price_2}
+                            defaultValue={field == 'idDrink_1' ? drinkPair.min_price_1 * 100: drinkPair.min_price_2 * 100}
                         />
                     </FormGroup>
                 </div>
@@ -159,10 +166,13 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
                     {drinkInputs.map((drinkPair, index) => (
                         <div className="drink-pair border rounded px-3 py-3" key={index}>
                             <FormLabel>Paire de boisson n°{index + 1}</FormLabel>
-                            <div className="d-flex gap-2">
+                            <div className="Dflex gap2 unflexMobile">
                                 {displayFields(drinkPair, index, 'idDrink_1')}
+                                <div className="mobile-spacer"></div>
                                 {displayFields(drinkPair, index, 'idDrink_2')}
-                                <Button onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
+                                <div className="removePair ">
+                                    <Button className="fullHeight" onClick={() => deleteDrinkInput(index)} variant="outline-danger"><TrashFill /></Button>
+                                </div>
                             </div>
                         </div>
                     ))}

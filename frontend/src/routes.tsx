@@ -6,6 +6,11 @@ import Drinks from "./pages/drinks/Drinks";
 import drinkLoader from "./pages/drinks/DrinkLoader";
 import EventDetails from "./pages/events/components/eventDetails/EventDetails";
 import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader";
+import BuyDrinks from "./pages/events/components/eventBuyDrinks/BuyDrinks";
+import GraphOne from "./pages/graphs/pages/GraphOne.tsx";
+import GraphTwo from "./pages/graphs/pages/GraphTwo.tsx";
+import { GraphsLoader } from "./pages/graphs/components/graphsLoader.tsx";
+import SwithGraphs from "./pages/graphs/pages/switchGraphs.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,8 +31,13 @@ const router = createBrowserRouter([
         path: 'events',
         children: [
           {
-            path: ':eventId',
+            path: 'pair/:eventId',
             element: <EventDetails/>,
+            loader: EventLoader,
+          },
+          {
+            path: 'manage/:eventId',
+            element: <BuyDrinks/>,
             loader: EventLoader,
           }
         ]
@@ -37,7 +47,27 @@ const router = createBrowserRouter([
   {
     path: 'login',
     element: <Login />
+  },
+  {
+    path: 'admin',
+    element: <Home />
+  },
+  {
+    path: 'graphs',
+    element: <SwithGraphs  />,
+    loader : GraphsLoader
+  },
+  {
+    path: 'graphOne',
+    element: <GraphOne  />,
+    loader : GraphsLoader
+  },
+  {
+    path: 'graphTwo',
+    element: <GraphTwo  />,
+    loader : GraphsLoader
   }
+  
 ]);
 
 export default router;

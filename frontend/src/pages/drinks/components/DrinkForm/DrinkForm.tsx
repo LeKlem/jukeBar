@@ -49,7 +49,7 @@ export default function DrinkForm(props: DrinkFormProps) {
             </FormGroup>
             <div className="actions d-flex gap-3 justify-content-center mt-3">
                 <Button type="submit" variant="success" className="col-3">{ props.updatedDrink ? 'Modifier' : 'Créer' }</Button>
-                <Button variant="outline-danger"  className="col-3" onClick={() => closeModal()}>Annuler</Button>
+                {/* <Button variant="outline-danger"  className="col-3" onClick={() => closeModal()}>Annuler</Button> */}
             </div>
         </Form>
     )

@@ -19,21 +19,21 @@ export class EventDrinksPair {
   @JoinColumn({ name: 'idDrink_2' })
   idDrink_2: Drink;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   price_inc_1: number;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   price_sub_1: number;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   price_inc_2: number;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   price_sub_2: number;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   min_price_1: number;
 
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   min_price_2: number;
 }

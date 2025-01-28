@@ -23,3 +23,15 @@ export const deleteEventPair = async (id: number) => {
 export const updateEventPair = async (id:number ,updatedPair: UpdateDrinkPairDTO) => {
     axios.patch(`${url}/${id}`, updatedPair, config);
 }
+export const getSinglePair = async (id: number): Promise<DrinkPairDTO> => {
+    return (await axios.get(`${url}/${id}`, config)).data;
+}
+export const getMultiplePairs = async (ids: number[]): Promise<DrinkPairDTO[]> => {
+    try {
+        const response = await axios.get(`${url}/findMany/${ids}`, config);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching multiple pairs:", error);
+        return [];
+    }
+};

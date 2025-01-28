@@ -10,6 +10,7 @@ import { Public } from './decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  // @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -33,6 +34,11 @@ export class UsersController {
   @Delete(':id')
   async remove(@Param() id: UUID) {
     return this.usersService.remove(id.id);
+  }
+  @Public()
+  @Get("/isValid/:token")
+  async isValid(@Param("token") token : string) {
+    return this.usersService.isValid(token);
   }
 }
 
