@@ -3,7 +3,7 @@ import { CreateEventDrinksPairDto } from './dto/create-event-drinks-pair.dto';
 import { UpdateEventDrinksPairDto } from './dto/update-event-drinks-pair.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EventDrinksPair } from './entities/event-drinks-pair.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { Drink } from 'drink/entities/drink.entity';
 import { Event } from 'event/entities/event.entity';
 import { DeepPartial } from 'typeorm';
@@ -112,8 +112,19 @@ export class EventDrinksPairsService {
   findAllByEvent(id: number) : Promise<EventDrinksPair[]> {
     return this.pairsRepository.find({
       where : {idEvent : {id}},
-      relations: ['idEvent'],
+      relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
 
+    });
+  }
+  findMany(ids: string) : Promise<EventDrinksPair[]> {
+    if(!ids){
+      throw new HttpException({ message: 'No pair selected.' }, HttpStatus.BAD_REQUEST);
+    }
+    const pairIdsStr = ids.split(',');
+    const pairIds = pairIdsStr.map(pairId => Number(pairId));
+    return this.pairsRepository.find({
+      where : {id : In(pairIds)},
+      relations: ['idEvent', 'idDrink_1', 'idDrink_2'],
     });
   }
 }
