@@ -9,8 +9,8 @@ import { EventLoader, EventsLoader } from "./pages/events/components/EventLoader
 import BuyDrinks from "./pages/events/components/eventBuyDrinks/BuyDrinks";
 import GraphOne from "./pages/graphs/pages/GraphOne.tsx";
 import GraphTwo from "./pages/graphs/pages/GraphTwo.tsx";
-import { GraphsLoader } from "./pages/graphs/components/graphsLoader.tsx";
-import SwithGraphs from "./pages/graphs/pages/switchGraphs.tsx";
+import { GraphsLoader } from "./pages/graphs/components/GraphsLoader.tsx";
+import SwithGraphs from "./pages/graphs/pages/SwitchGraphs.tsx";
 
 const router = createBrowserRouter([
   {
