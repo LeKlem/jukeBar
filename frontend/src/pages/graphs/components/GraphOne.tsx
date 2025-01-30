@@ -63,7 +63,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
   }, [props.drinks]);
 
   useEffect(() => {
-    const socket: Socket = io("http://localhost:5200");
+    const socket: Socket = io("http://localhost:5201");
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
       setPrices((prevPrices) => {
         console.log(prevPrices);

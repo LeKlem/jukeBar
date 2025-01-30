@@ -12,7 +12,7 @@ async function bootstrap() {
   }));
 
   app.enableCors({
-    origin: '91.134.75.244',
+    origin: '',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

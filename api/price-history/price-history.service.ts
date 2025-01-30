@@ -65,7 +65,6 @@ export class PriceHistoryService {
     }
 
     const time : string =  new Date().toISOString();
-    console.log(time);
     let newPriceData = {
       pairId: oldPrice.pairId,
       price_drink_1: oldPrice.price_drink_1,
