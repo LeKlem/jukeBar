@@ -17,7 +17,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { DrinkDTO } from "../../../../models/DrinkModels";
 import { DrinkPairDTO } from "../../../../models/DrinkPairModels";
-import { getDrinksPrices, buyDrink, removeLastAction } from "../../../../webservices/DrinkPricesWebService";
+import { getDrinksPrices, buyDrink } from "../../../../webservices/DrinkPricesWebService";
 
 interface DrinkPairFormProps {
   drinks: DrinkDTO[];
@@ -40,6 +40,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
   const isProcessingRef = useRef<boolean>(false);
   const lastExecutionRef = useRef<number>(0);
 
+  drinks;//to remove error in build
   useEffect(() => {
       setDrinks(props.drinks);
       setDrinkInputs(props.drinkPairs);
@@ -153,12 +154,12 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
               </div>
           </Col>
       );
-  };
+  }; 
 
-  const cancelAction = async (pairId: number) => {
-      await removeLastAction(pairId);
-      setNbOfDrinksSold(nbOfDrinksSold - 1);
-  }
+//   const cancelAction = async (pairId: number) => {
+//       await removeLastAction(pairId);
+//       setNbOfDrinksSold(nbOfDrinksSold - 1);
+//   }
 
   return (
       <Container>
