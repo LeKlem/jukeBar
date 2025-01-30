@@ -54,7 +54,7 @@ export default function GenerateGraphOne(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [drinks, setdrinks] = useState<drinks[]>([]);
-  const [existingLabels, setExistingLabels] = useState<string[]>([]);
+  const [existingLabels] = useState<string[]>([]);
   const numberOfDrinks = useRef<number>(0);
   const shiftLabels = useRef<boolean>(false);
 

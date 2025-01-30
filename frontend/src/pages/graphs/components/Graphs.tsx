@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { io, Socket } from "socket.io-client";
 import {
@@ -57,7 +57,7 @@ export default function GenerateGraphs(props: DrinkPairProps) {
   const [prices, setPrices] = useState<PriceHistoryDTO[]>([]);
   const [labels, setLabels] = useState<string[]>([]);
   const [drinks, setDrinks] = useState<Drinks[]>([]);
-  const [existingLabels, setExistingLabels] = useState<string[]>([]);
+  const [existingLabels] = useState<string[]>([]);
   const [showTable, setShowTable] = useState(true);
   const numberOfDrinks = useRef<number>(0);
   const shiftLabels = useRef<boolean>(false);

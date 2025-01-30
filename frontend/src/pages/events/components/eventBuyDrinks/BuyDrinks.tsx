@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router-dom"
 import { EventDTO } from "../../../../models/EventModels";
 import { DrinkDTO } from "../../../../models/DrinkModels";
 import { DrinkPairDTO } from "../../../../models/DrinkPairModels";
-import DrinkPairForm from "./DrinkPairs";
+import DrinkPairForm from "./drinkPairs";
 
 interface EventLoaderData {
     event: EventDTO,

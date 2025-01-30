@@ -1,9 +1,9 @@
 import { Button, Table } from "react-bootstrap";
 import { EventDTO } from "../../../../models/EventModels";
-import { CaretRightSquareFill, CupStraw, CurrencyDollar, PlusSquare, XSquareFill, Trash3 } from 'react-bootstrap-icons';
+import { CaretRightSquareFill, CupStraw, CurrencyDollar, PlusSquare, XSquareFill } from 'react-bootstrap-icons';
 import './EventTable.scss'
 import { Link } from "react-router-dom";
-import { createEvent, removeEvent } from "../../../../webservices/EventWebService";
+import { createEvent } from "../../../../webservices/EventWebService";
 import { useEffect, useState } from "react";
 import { EVENT_TTL } from "../../../../const/const";
 
@@ -56,11 +56,10 @@ export default function EventTable(props: EventTableProps) {
         setEvents([createdEvent, ...events])
     }
 
-    const remove = async (id : number) => {
-        removeEvent(id);
-
-        return "";
-    }
+    // const remove = async (id : number) => {
+    //     removeEvent(id);
+    //     return "";
+    // }
 
 
     return (
