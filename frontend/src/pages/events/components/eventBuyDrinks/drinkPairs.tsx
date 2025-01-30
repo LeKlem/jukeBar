@@ -154,7 +154,7 @@ export default function DrinkPairForm(props: DrinkPairFormProps) {
               </div>
           </Col>
       );
-  };
+  }; 
 
 //   const cancelAction = async (pairId: number) => {
 //       await removeLastAction(pairId);
