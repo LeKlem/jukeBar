@@ -39,7 +39,8 @@ export async function EventsLoader() {
                 window.location.replace("/");
             }
         } else {
-            throw error;
+            console.log(error.message);
+            return redirect("/graphs");
         }
     }
 }
