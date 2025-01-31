@@ -18,7 +18,7 @@ export default function Login() {
     }
 
     return (
-        <div className="d-flex col-6 offset-3 align-items-center">
+        <div className="d-flex col-6 offset-3 login-form align-items-center">
             <Form className="border rounded p-5 w-100 d-flex flex-column gap-3" onSubmit={(e) => submitLogin(e)}>
                 <h1 className="text-center">Connexion</h1>
                 <FormGroup>

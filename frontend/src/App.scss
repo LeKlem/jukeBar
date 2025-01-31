@@ -66,6 +66,15 @@
   .mobile-spacer{
     margin-top: 30px;
   }
+  .login-form{
+    width: 95%!important;
+    margin: auto !important;
+    form{
+      button{
+        width: 50%;
+      }
+    }
+  }
 }
 .gap2{
   gap : .5rem;
