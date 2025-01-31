@@ -10,6 +10,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
+  app.enableShutdownHooks();
 
   app.enableCors({
     origin: '',

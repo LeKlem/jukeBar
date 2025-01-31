@@ -8,4 +8,8 @@ export class WebSocketService {
     sendPriceUpdate(priceUpdate: any) {
         this.gateway.sendPriceUpdate(priceUpdate);
     }
+    onApplicationShutdown(signal?: string) {
+        console.log(`closing gateway ${signal})`);
+        this.gateway.closeServer(); // Close the WebSocket server
+      }
 }

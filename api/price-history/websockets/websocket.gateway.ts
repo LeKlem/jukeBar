@@ -26,5 +26,10 @@ import {
     sendPriceUpdate(update: any) {
       this.server.emit('price-updates', update);
     }
+    closeServer() {
+      this.server.close(() => {
+        console.log('WebSocket server closed');
+      });
   }
+}
   

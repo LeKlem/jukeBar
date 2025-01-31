@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /build
-
+/src/app.module.ts
 # Logs
 logs
 *.log
