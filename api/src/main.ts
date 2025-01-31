@@ -11,7 +11,7 @@ async function bootstrap() {
     transform: true,
   }));
   app.enableShutdownHooks();
-
+  app.setGlobalPrefix('api');
   app.enableCors({
     origin: 'http://91.134.75.244',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
