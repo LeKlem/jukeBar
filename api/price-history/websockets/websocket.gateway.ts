@@ -13,7 +13,6 @@ import { Server } from 'socket.io';
   server: Server;
 
   afterInit(server: Server) {
-    console.log(`[WebSocket] Instance ID: ${process.pid}`);
     console.log('WebSocket server initialized and ready to accept connections');
   }
   handleConnection(client: any) {
