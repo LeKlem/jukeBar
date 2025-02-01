@@ -12,11 +12,11 @@ async function bootstrap() {
   }));
   app.enableShutdownHooks();
   app.setGlobalPrefix('api');
-  // app.enableCors({
-  //   origin: ['https://jukebar.ovh', 'https://www.jukebar.ovh'],
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: ['https://jukebar.ovh', 'https://www.jukebar.ovh'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
   await app.listen(5000);
 }
