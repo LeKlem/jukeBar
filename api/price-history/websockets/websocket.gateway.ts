@@ -8,8 +8,7 @@ import {
   import { Server } from 'socket.io';
   
   @WebSocketGateway({
-    port: 443,
-    cors: {
+      cors: {
       origin: ['https://jukebar.ovh', 'https://www.jukebar.ovh'],
     },
   })  export class PriceHistoryGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
