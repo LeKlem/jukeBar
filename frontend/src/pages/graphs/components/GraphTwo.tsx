@@ -36,8 +36,6 @@ export default function GenerateGraphTwo(props: DrinkPairProps) {
       withCredentials: true,
     });    
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
-      console.log("received data", newPrice);
-
       setPrices((prevPrices) => {
         const updatedPrices = prevPrices.map((price) => {
           if (price.pairId === newPrice.pairId) {

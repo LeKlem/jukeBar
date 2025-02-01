@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
+import { IoAdapter } from '@nestjs/platform-socket.io';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -17,6 +17,10 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  const wsApp = await NestFactory.create(AppModule);
+  wsApp.useWebSocketAdapter(new IoAdapter(wsApp));
+  await wsApp.listen(5201);
 
   await app.listen(5000);
 }

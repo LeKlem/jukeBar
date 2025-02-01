@@ -84,7 +84,8 @@ export default function GenerateGraphs(props: DrinkPairProps) {
         }
         
         return updatedPrices;
-      });      setMaxPrices((prevPrices) => {
+      });
+      setMaxPrices((prevPrices) => {
         const updatedPrices = prevPrices.map((price) => {
           if (price.pairId === newPrice.pairId) {
             const drink1Change = newPrice.price_drink_1 > price.price_drink_1 ? "up" : newPrice.price_drink_1 < price.price_drink_1 ? "down" : "";
