@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PriceHistoryDTO } from "../../../models/Price-history";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 interface DrinkPairProps {
   prices: PriceHistoryDTO[];
