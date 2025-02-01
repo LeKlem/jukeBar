@@ -18,9 +18,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const wsApp = await NestFactory.create(AppModule);
-  wsApp.useWebSocketAdapter(new IoAdapter(wsApp));
-  await wsApp.listen(5201);
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(5000);
 }
