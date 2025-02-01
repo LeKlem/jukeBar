@@ -30,8 +30,11 @@ export default function GenerateGraphTwo(props: DrinkPairProps) {
   const [drinks, setDrinks] = useState<Drink[]>([]);
 
   useEffect(() => {
-    const socket: Socket = io("http://localhost:5201");
-
+    const socket = io("https://jukebar.ovh", {
+      path: "/socket.io/",
+      transports: ["websocket"],
+      withCredentials: true,
+    });    
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
       console.log("received data", newPrice);
 

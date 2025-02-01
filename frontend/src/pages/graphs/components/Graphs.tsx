@@ -67,8 +67,11 @@ export default function GenerateGraphs(props: DrinkPairProps) {
   }, [props.drinks]);
 
   useEffect(() => {
-    const socket: Socket = io("http://localhost:5200");
-
+    const socket = io("https://jukebar.ovh", {
+      path: "/socket.io/",
+      transports: ["websocket"],
+      withCredentials: true,
+    });    
     socket.on("price-updates", (newPrice: PriceHistoryDTO) => {
     setPrices((prevPrices) => {
         const updatedPrices = [...prevPrices, newPrice];
