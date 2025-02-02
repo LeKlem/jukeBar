@@ -13,6 +13,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
   app.setGlobalPrefix('api');
   app.enableCors({
+    // origin: ['*'],
     origin: ['https://jukebar.ovh', 'https://www.jukebar.ovh'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
