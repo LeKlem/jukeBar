@@ -10,7 +10,7 @@ import { Public } from './decorators/public.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  // @Public()
+  //@Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

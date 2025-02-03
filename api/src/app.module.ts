@@ -26,7 +26,7 @@ import {PriceHistoryGateway} from 'price-history/websockets/websocket.gateway'
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: '596zmEKBCqgW-08DK',
       database: 'jukebar',
       entities: [Event, Drink, User, EventDrinksPair, PriceHistory],
       synchronize: true,
